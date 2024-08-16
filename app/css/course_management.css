@@ -1,0 +1,138 @@
+:root {
+    --primary-blue: #4153af;
+    --secondary-violet: #b03acd;
+    --secondary-yellow: #fac748;
+    --secondary-yellow-opacity: rgba(250, 199, 72, 0.7);
+    --secondary-grey: #808080;
+    --background-beige: #f6eef1;
+}
+
+/* Styles généraux */
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--background-beige);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+/* Conteneur principal */
+.data-container-Aze323jZd {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin: 20px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.data-container-Aze323jZd:hover {
+    transform: scale(1.02);
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+/* Nom du cours */
+.course-name-bkz0234 h3 {
+    color: var(--primary-blue);
+    margin: 0;
+    font-size: 1.8em;
+}
+
+/* Niveau académique */
+.academic-level-jearo23491 p,
+.subject-studied-jearo43 p {
+    color: var(--text-color);
+    font-size: large;
+    margin: 10px;
+}
+
+/* Informations de partage */
+.sharedQ9231 {
+    background-color: var(--secondary-yellow-opacity);
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+.sharedQ9231 p {
+    margin: 0;
+    color: var(--text-color);
+}
+
+/* Code d'accès */
+.access-code-azd23 {
+    background-color: var(--secondary-yellow-opacity);
+    padding: 10px;
+    border-radius: 10px;
+    margin: 10px;
+    box-sizing: border-box;
+    max-width: 30em;
+    min-height: 5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.field-akoqs203 {
+    border: 1px solid #d3d3d3;
+    /* Bordure légèrement grisée */
+    border-radius: 4px;
+    /* Coins arrondis optionnels */
+    padding: 10px;
+    /* Espacement interne optionnel */
+    box-sizing: border-box;
+    /* Assure que le padding et la bordure sont inclus dans la taille totale */
+    cursor: text;
+    /* Change le curseur en curseur de texte */
+}
+
+.access-code-azd23 p {
+    margin: 0;
+    color: black;
+}
+
+.access-code-azd23 input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.explanation-kaita94192 {
+    background-color: var(--secondary-grey);
+    color: #fff;
+    padding: 20px;
+    margin: 1em;
+    border-radius: 8px;
+}
+
+.explanation-kaita94192 p {
+    margin: 0;
+}
+
+/* Affichage pour les petits écrans */
+@media screen and (max-width: 876px) {
+    .data-container-Aze323jZd {
+        flex-direction: column;
+    }
+
+    .course-name-bkz0234 h3 {
+        font-size: 1.5em;
+    }
+
+    .academic-level-jearo23491 p,
+    .subject-studied-jearo43 p {
+        font-size: medium;
+    }
+
+    .access-code-azd23 {
+        max-width: none;
+    }
+}

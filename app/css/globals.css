@@ -1,0 +1,19 @@
+header {
+    background-color: #4153AF;
+    color: #F6EEF1;
+    padding: 20px;
+}
+
+header a {
+    color: #F6EEF1;
+    text-decoration: none;
+    margin-right: 10px;
+}
+
+header a:hover {
+    color: #B03ACD;
+}
+
+body {
+    background-color: #F6EEF1;
+}

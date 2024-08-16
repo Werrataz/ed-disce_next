@@ -1,0 +1,25 @@
+
+1. Ecrire le code pour les pages course/management
+2. Faire la page d'accueil et le layout avec le menu
+3. Faire la page de prise de note de cours, avec la nouvelle architecture en Knowledge
+(Concernant le 3., créer une architecture avec des Knowledges en background ou non ?)
+4. Concernant la page sur les flashcards, à voir si on créé une nouvelle version ou non
+-- Au niveau background, il faudra probablement faire en sorte que les gets ne renvoient plus que les cours et flashcards de l'utilisateur --
+5. Faire le css de l'ensemble (en réutilisant éventuellement le css de l'autre application)
+6. Lier les deux appications (attention, il faudra probablement utiliser des balises <a> du coup, et pas des balises <Link>)
+
+
+Mise à jour 15/08 : 
+Gérer la sauvegarde (lorsque fetcher est modifié notamment)
+Gérer ensuite l'affichage de l'ensemble des éléments
+
+Gérer les menus de gauche (qui risquent d'afficher des choses différentes en fonction de la page)
+Le plus pertienent serait de créer un composant qui affiche une liste qu'on lui fourni en entrée
+Il faudra ensuite générer la liste et gérer les requêtes dans chaque générateurs de menu
+Enfin, il faudra faire attention aux liens (chaque élément doit déclancher un évènement au clic. Il faudra pouvoir personnaliser l'évenement. 
+-> Plus exactement l'évenement est une redirection mais il faut personnaliser la redirection.
+La solution pourrait être de fournir la base de l'url en argument du composant également.)
+
+Utiliser la balise Suspens (tester sur une page pour le chargement)
+<Suspense fallback={leHTMLaudémarage}>LeCorpsHTMLdeLaPage</Suspense>
+Pour gérer les erreurs, on peut return un autre jsx dans le corps du code (si je jsx renvoie une erreur, on a alors un code qui va renvoyer une erreur)
