@@ -16,20 +16,33 @@ import React from 'react';
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { CourseFetcher } from '../../../../fetchers/course_fetcher.js';
-
+import Loading from '@/app/loading.js';
 import '../../../css/features/loadings.css';
+
+function setNewValue(courseFetcher, setCourseFetcher, newValues) {
+    const newFetcher = { ...courseFetcher };
+    const newValueList = Object.entries(newValues);
+    newValueList.forEach(([key, value]) => {
+        newFetcher[key] = value;
+    });
+    setCourseFetcher(newFetcher);
+}
 
 function Page() {
     const { coursePID } = useParams();
     console.log(coursePID);
-    const [state, setState] = useState('sd');
-    const [courseFetcher, setCourseFetcher] = useState(new CourseFetcher({ publicIdentifier: coursePID }));
+    const [state, setState] = useState('loading');
+    const [delta, setDelta] = useState({});
+
+    console.log(delta);
 
     useEffect(() => {
         const getCourse = async () => {
             try {
+                const courseFetcher = new CourseFetcher({ publicIdentifier: coursePID });
                 await courseFetcher.restore();
-                setCourseFetcher(courseFetcher);
+                console.log(courseFetcher);
+                setDelta(courseFetcher._delta);
                 setState('loaded');
             } catch (error) {
                 console.error(error);
@@ -39,36 +52,57 @@ function Page() {
         getCourse();
     }, []);
 
+    // Faire un truc pour modifier les données et envoyer des requêtes au serveur
+
     // useEffect(async () => {
     //     await courseFetcher.amend();
     // }, [courseFetcher]);
 
     const handleShared = () => {
-        const newFetcher = { ...courseFetcher };
-        newFetcher._delta.shared = !newFetcher._delta.shared;
-        setCourseFetcher(newFetcher);
+        const newDelta = { ...delta };
+        newDelta.shared = !delta.shared;
+        setDelta(newDelta);
+    }
+
+    const handleEmail = (index, email) => {
+        const newCourse = { ...course };
+        if (!newCourse._delta.emailsAllowedToAccess.includes(email)) {
+            newCourse._delta.emailsAllowedToAccess[index] = email;
+            // setCourseFetcher(newCourse);
+        } else {
+            alert("Cette adresse email est déjà dans la liste. Elle n'a pas été ajoutée.");
+        }
+        // newCourse._delta.emailsAllowedToAccess[index] = email;
+        // setCourse(newCourse);
     }
 
     return (
         <div>
-            {state === 'loading' ? <div className='spinner'></div> :
-                state === 'error' ? <div>Erreur lors du chargement de la page</div> :
+            {state === 'loading' ? <Loading /> : state === 'error' ? <div>Erreur lors du chargement de la page</div> :
+                <div>
                     <div>
                         <div>
+                            <h2>Informations sur ce cours</h2>
                             <div>
-                                <h2>Informations sur ce cours</h2>
-                                <div>
-                                    <button onClick={handleShared}>{courseFetcher._delta.shared ? "Ce cours est public" : "Ce cours est privé"}</button>
-                                </div>
-                            </div>
-                            <div>
-                                {/* Zone contenant la liste des flashcards */}
+                                <button onClick={handleShared}>{delta.shared ? "Ce cours est public" : "Ce cours est privé"}</button>
                             </div>
                         </div>
                         <div>
-                            {/* Zone affichant la liste d'adresses email */}
+                            {/* Zone contenant la liste des flashcards */}
                         </div>
                     </div>
+                    {/* <div className='email-container-afk293'>
+                        {courseFetcher._delta.emailsAllowedToAccess.map((email, index) => {
+                            <div key={email} className='email-zone-ajze29342'>
+                                <input value={email} className='email-field-j934582'></input>
+                            </div>
+                        })}
+                        <div className='email-zone-ajze29342'>
+                            <input className='email-field-j934582'></input>
+                        </div>
+                        <button className='email-field-like-fje4'>Ajouter un email</button>
+                    </div> */}
+                </div>
             }
         </div>
     );

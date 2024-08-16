@@ -3,9 +3,6 @@ import { Inter } from "next/font/google";
 import "./css/globals.css";
 import LANG from "../config/language.config";
 import Link from "next/link";
-import { Suspense } from "react";
-import Loading from "./loading";
-import ErrorManager from "./errors";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,7 +30,7 @@ export default function RootLayout({
           <Link href="/">{LANG.menu.home}</Link>
           <Link href="/notes">{LANG.menu.home}</Link>
         </header>
-        <Suspense fallback={<Loading />}>{children}</Suspense>
+        {children}
       </body>
     </html>
   );
