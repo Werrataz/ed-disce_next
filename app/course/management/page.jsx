@@ -40,7 +40,7 @@ function Page() {
             <div className='explanation-kaita94192'>
                 <p>{LANG.courseManager.explanation}</p>
             </div>
-            {state === "loading" ? <Loading /> : state === "loaded" && courses.map((course) => {
+            {state === 'loading' ? <Loading /> : state === 'error' ? <div>Erreur lors du chargement de la page</div> : courses.map((course) => (
                 < div key={course.publicIdentifier} className="data-container-Aze323jZd" onClick={() => router.push(`management/${course.publicIdentifier}`)} >
                     <div className='course-name-bkz0234'>
                         <h3><b>{course.name}</b></h3>
@@ -52,7 +52,6 @@ function Page() {
                         <p>{LANG.general.subjectStudied}: {LANG.subjectStudied[course.subjectStudied]}</p>
                     </div>
                     <div className='sharedQ9231' title={LANG.courseManager.hoverInformationsForShare}>
-                        {console.log("CCCC")}
                         <p>{course.shared ? LANG.courseManager.publicCourse : LANG.courseManager.privateCourse}</p>
                     </div>
                     {(course.shared) ? (
@@ -65,9 +64,8 @@ function Page() {
                             <p>{LANG.courseManager.numberThatCanAccess + '  ' + course.emailsAllowedToAccess.length}</p>
                         </div>
                     )}
-                    {console.log(course)}
                 </div>
-            })}
+            ))}
         </div >
     );
 }

@@ -32,6 +32,7 @@ class CourseFetcher extends AbstractFetcher {
 
   async amend() {
     const url = `${GLOBAL.domainName}/course/${this._delta.publicIdentifier}/`;
+    console.log(this._delta);
     const response = await super.amend(url);
     this.merge(response);
     return response;

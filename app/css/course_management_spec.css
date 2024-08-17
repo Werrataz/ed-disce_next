@@ -1,0 +1,184 @@
+/* Style pour la page */
+.datas-container-aozr2034 {
+    background-color: #F6EEF1;
+    border-radius: 15px;
+    padding: 20px;
+    color: #000;
+    font-family: Arial, sans-serif;
+}
+
+.show-userdatas-iagaeor239 {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.genericdatas-kgot203 {
+    background-color: #4153AF;
+    border-radius: 15px;
+    padding: 20px;
+    color: #FFF;
+    flex: 1;
+}
+
+.genericdatas-kgot203 h2,
+.genericdatas-kgot203 h3,
+.genericdatas-kgot203 p {
+    margin: 10px 0;
+}
+
+.genericdatas-kgot203 button {
+    background-color: #B03ACD;
+    border: none;
+    border-radius: 10px;
+    color: #FFF;
+    padding: 10px 20px;
+    cursor: pointer;
+    width: 10em;
+}
+
+.genericdatas-kgot203 button:hover {
+    background-color: #4153AF;
+    color: #FFF;
+}
+
+.access-code-fej238 {
+    background-color: #B03ACD;
+    border-radius: 10px;
+    padding: 10px;
+    color: #FFF;
+}
+
+.field-azn014 {
+    background-color: #FFF;
+    border-radius: 10px;
+    padding: 10px;
+    color: #000;
+}
+
+.newfeature-nw29 button {
+    background-color: #B03ACD;
+    border: none;
+    border-radius: 10px;
+    color: #FFF;
+    padding: 10px 20px;
+    cursor: not-allowed;
+}
+
+.flashcards-container-aozr2034 {
+    background-color: #B03ACD;
+    border-radius: 15px;
+    padding: 20px;
+    color: #FFF;
+    flex: 1;
+}
+
+.flashcard-element-jeo2034 {
+    background-color: #4153AF;
+    border-radius: 10px;
+    padding: 10px;
+    color: #FFF;
+    margin-bottom: 10px;
+}
+
+.email-container-afk293 {
+    background-color: #FFF;
+    border-radius: 15px;
+    padding: 20px;
+    color: #000;
+}
+
+.email-zone-ajze29342 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.email-field-j934582 {
+    border: 1px solid #4153AF;
+    border-radius: 10px;
+    padding: 10px;
+    flex-grow: 1;
+}
+
+.email-field-button-akze234 {
+    background-color: #B03ACD;
+    border: none;
+    border-radius: 10px;
+    color: #FFF;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.email-field-button-akze234:hover {
+    background-color: #4153AF;
+    color: #FFF;
+}
+
+.alert-text-aigs9234 {
+    color: #B03ACD;
+}
+
+/* Comportement pour les grands écrans */
+@media (min-width: 601px) {
+    .show-userdatas-iagaeor239 {
+        flex-direction: row;
+    }
+}
+
+/* Comportement pour les petits écrans */
+@media (max-width: 600px) {
+    .datas-container-aozr2034 {
+        padding: 10px;
+    }
+
+    .genericdatas-kgot203 {
+        padding: 15px;
+    }
+
+    .genericdatas-kgot203 h2,
+    .genericdatas-kgot203 h3,
+    .genericdatas-kgot203 p {
+        margin: 5px 0;
+    }
+
+    .genericdatas-kgot203 button {
+        padding: 8px 15px;
+    }
+
+    .access-code-fej238 {
+        padding: 8px;
+    }
+
+    .field-azn014 {
+        padding: 8px;
+    }
+
+    .newfeature-nw29 button {
+        padding: 8px 15px;
+    }
+
+    .flashcards-container-aozr2034 {
+        padding: 15px;
+    }
+
+    .flashcard-element-jeo2034 {
+        padding: 8px;
+    }
+
+    .email-container-afk293 {
+        padding: 15px;
+    }
+
+    .email-zone-ajze29342 {
+        gap: 5px;
+    }
+
+    .email-field-j934582 {
+        padding: 8px;
+    }
+
+    .email-field-button-akze234 {
+        padding: 8px 15px;
+    }
+}
