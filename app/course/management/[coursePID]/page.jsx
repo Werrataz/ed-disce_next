@@ -8,10 +8,6 @@ import LANG from '@/config/language.config.js';
 import '@/app/css/features/loadings.css';
 import '@/app/css/course_management_spec.css';
 
-function mergeDelta(delta, setDelta, modifs) { // mise à jour de delta
-    setDelta(Object.assign({ ...delta }, modifs));
-}
-
 function EmailField({ email, index, delta, setDelta }) {
     return (
         <div className='email-zone-ajze29342'>
