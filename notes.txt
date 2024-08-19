@@ -22,3 +22,7 @@ Ensuite il restera à tester pour vérifier que tout fonctionne bien, et à fair
 (Il faudra également gérer les tokens de connection -> Idée : juste faire qu'on ne vérifie pour l'instant que le token de connection rapide, et que s'il n'est plus valide, on demannde à l'utilisateur de se reconnecter)
 Concrétement, pour chaque page, si la requête renvoie que le token est invalide, on redirect vers la page de connection en gros
 
+Notes du 19 aout au soir : 
+Il y a un problème dans une requête de création de cours pour la page notes/new
+Tester avec des requêtes envoyées depuis d'autres sources (et sinon retester directement par ce que c'est peut-être un CORS Policy)
+

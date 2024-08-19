@@ -1,6 +1,10 @@
-import React, { useState } from 'react';
+"use client";
+import { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { CourseFetcher } from '@/fetchers/course_fetcher';
 import { mergeDelta } from '@/functions/merge';
+import Loader from '../../../components/Loader';
+import LANG from '../../../config/language.config';
 
 // Faire la partie qui gére les erreurs dans cette page
 // Finaliser ensuite le formulaire (page principale)
@@ -8,58 +12,93 @@ import { mergeDelta } from '@/functions/merge';
 // (relire les infos envoyés par copilot à ce propos)
 
 
-const Redirection = () => {
-    return (
-        <div>
-            <p>Cours créé avec succès ! Redirection en cours...</p>
-        </div>
-    );
-};
-
 function Page() {
     const [delta, setDelta] = useState({});
-    const [isLoading, setIsLoading] = useState(false);
+    const [state, setState] = useState('loading');
+    const [waitingForResponse, setWaitingForResponse] = useState(false);
+    const router = useRouter();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    useEffect(() => {
         const userPID = localStorage.getItem('userPID');
-        mergeDelta(delta, setDelta, { user: userPID });
-        await CourseFetcher.create(delta);
-        setIsSuccess(true);
-        setTimeout(() => {
-            window.location.href = `/courses/${delta.publicIdentifier}`;
-        }, 3000);
-    };
+        const courseFetcher = new CourseFetcher({ user: userPID });
+        if (userPID) {
+            mergeDelta(delta, setDelta, courseFetcher.get());
+            setState('loaded');
+        } else {
+            setState('disconnected');
+        }
+    }, []);
+
+    const handleSubmit = useCallback(async (e) => {
+        e.preventDefault();
+        setWaitingForResponse(true);
+        const courseFetcher = new CourseFetcher(delta);
+        const response = await courseFetcher.create();
+        if (await response && await response.publicIdentifier) {
+            router.push(`/notes/${response.publicIdentifier}`);
+        } else {
+            console.log(response);
+            // setState('error');
+        }
+    }, [delta]);
 
     return (
-        <div>
-            {isSuccess ? (
-                <p>Données envoyées avec succès ! Redirection en cours...</p>
+        <Loader state={state}>
+            <div>
+                <p>La qualité de nos services dépendent de la quantité d'information dont nous disposons. Vous pouvez nous fournir les informations nécessaires en complétant les champs ci-dessous.</p>
+            </div>
+            {waitingForResponse ? (
+                <p>Cours créé avec succès ! Redirection en cours...</p>
             ) : (
-                <form onSubmit={handleSubmit}>
+                <div className='new-course-form-ncgf456'>
                     <label>
-                        <p>Matière étudiée: </p>
+                        <p>Nom du cours: </p>
                         <input
                             type="text"
-                            onChange={(e) => mergeDelta(delta, setDelta, { subjectStudied: e.target.value })}
+                            onChange={(e) => mergeDelta(delta, setDelta, { name: e.target.value })}
                         />
                     </label>
                     <br />
                     <label>
-                        <p>Niveau des études: </p>
+                        <p>Matière étudiée: </p>
+                        <select onChange={(e) => mergeDelta(delta, setDelta, { subjectStudied: e.target.value })}>
+                            {Object.entries(LANG.subjectStudied).map(([key, labelText], index) => (
+                                <option key={index} value={key}>{labelText}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <br />
+                    <label>
+                        <p>Niveau étduié : </p>
+                        <select onChange={(e) => mergeDelta(delta, setDelta, { academicLevel: e.target.value })}>
+                            {Object.entries(LANG.academicLevel).map(([key, labelText], index) => (
+                                <option key={index} value={key}>{labelText}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <label>
+                        <p>Dans le cadre de quel cursus ce cours vous servira ? </p>
                         <input
                             type="text"
                             onChange={(e) => mergeDelta(delta, setDelta, { academicLevel: e.target.value })}
                         />
                     </label>
                     <br />
-                    <button type="submit" disabled={isLoading}>
-                        {isLoading ? 'Envoi en cours...' : 'Valider'}
+                    <label>
+                        <p>Vous pouvez ajouter des informations complémentaires sur ce cours ici : </p>
+                        <input
+                            type="text"
+                            onChange={(e) => mergeDelta(delta, setDelta, { academicLevel: e.target.value })}
+                        />
+                    </label>
+                    <br />
+                    <button disabled={waitingForResponse} onClick={handleSubmit}>
+                        Valider
                     </button>
-                </form>
+                </div>
             )}
-        </div>
+        </Loader>
     );
-};
+}
 
 export default Page;
