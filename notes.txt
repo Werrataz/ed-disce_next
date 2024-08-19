@@ -16,3 +16,9 @@ Enfin, il faudra faire attention aux liens (chaque élément doit déclancher un
 -> Plus exactement l'évenement est une redirection mais il faut personnaliser la redirection.
 La solution pourrait être de fournir la base de l'url en argument du composant également.)
 
+Notes du 18 août au soir : 
+Pour la page connection, il faudrait créer tout les écouteurs d'évenement
+Ensuite il restera à tester pour vérifier que tout fonctionne bien, et à faire la gestion d'erreur éventuellement
+(Il faudra également gérer les tokens de connection -> Idée : juste faire qu'on ne vérifie pour l'instant que le token de connection rapide, et que s'il n'est plus valide, on demannde à l'utilisateur de se reconnecter)
+Concrétement, pour chaque page, si la requête renvoie que le token est invalide, on redirect vers la page de connection en gros
+

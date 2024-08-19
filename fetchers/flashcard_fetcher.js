@@ -5,9 +5,7 @@ import { AbstractFetcher } from "./abstract_fetcher";
 class FlashcardFetcher extends AbstractFetcher {
 
     constructor(delta) {
-
         super(delta)
-        this._delta.publicIdentifier === undefined ? console.log("Attention, le publicIdentifier n'a pas été fourni lors de l'appel du constructeur. La communication avec l'API ne s'effectuera pas correctement.") : null;
 
     }
 

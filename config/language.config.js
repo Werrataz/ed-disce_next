@@ -54,6 +54,7 @@ export const FR = {
     clicForManageAccess: "Cliquez pour paramétrer les accès",
     numberThatCanAccess:
       "Nombre de personne pouvant accéder à ce cours (autre que vous) :",
+    thereIsNoCourses: "Vous n'avez créé aucun cours pour le moment",
   },
   menu: {
     newCourse: "Commencer un nouveau cours",

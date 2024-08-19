@@ -43,6 +43,30 @@ body {
     font-size: 1.8em;
 }
 
+.no-course-azd23 {
+    background-color: #f8f9fa;
+    /* Couleur de fond légère */
+    border: 1px solid #dee2e6;
+    /* Bordure légère */
+    border-radius: 10px;
+    /* Coins arrondis */
+    padding: 20px;
+    /* Espacement interne */
+    text-align: center;
+    /* Centrer le texte */
+    color: #495057;
+    /* Couleur du texte */
+    font-size: 16px;
+    /* Taille de la police */
+    margin: 1em;
+    /* Espacement externe */
+}
+
+.no-course-azd23 p {
+    margin: 0;
+    /* Supprimer le margin par défaut du paragraphe */
+}
+
 /* Niveau académique */
 .academic-level-jearo23491 p,
 .subject-studied-jearo43 p {
