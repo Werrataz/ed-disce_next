@@ -1,9 +1,9 @@
 "use client";
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useCallback, useEffect, useState } from 'react';
-import { UserFetcher } from '../../fetchers/user_fetcher';
-import LANG from '../../config/language.config';
-import Loader from '../../components/Loader';
+import { UserFetcher } from '@/fetchers/user_fetcher';
+import LANG from '@/config/language.config';
+import Loader from '@/components/Loader';
 import { mergeDelta } from '@/functions/merge';
 
 const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/;
@@ -32,18 +32,23 @@ const LoginPage = () => {
         if (response && response.publicIdentifier) {
             mergeDelta(delta, setDelta, userFetcher.get());
             setStepPassed('launchf');
+            return true;
         } else {
             console.log("erreur lors de la création du compte");
             // Charger une page d'erreur (avec un return Error())
+            return false;
         }
     }, [delta, setDelta]);
 
     const connect = useCallback(async (password) => {
         const userFetcher = new UserFetcher(delta);
         const response = await userFetcher.restoreWithAuth(password);
-        if (await response.user.publicIdentifier && await response.tokens) {
+        if (await response.user && await response.user.publicIdentifier && await response.tokens) {
             mergeDelta(delta, setDelta, userFetcher.get());
             setStepPassed('launch');
+            return true;
+        } else {
+            return false;
         }
     }, [delta, setDelta]);
 
@@ -54,20 +59,11 @@ const LoginPage = () => {
             }, 8000);
             const email = searchParams.get('email');
             if (email) {
-                const userFetcher = new UserFetcher({ email: email });
-                const response = await userFetcher.restorePID();
-                if (await response && await response.publicIdentifier) {
-                    localStorage.setItem('userPID', response.publicIdentifier);
-                    await userFetcher.restore();
-                    mergeDelta(delta, setDelta, userFetcher.get());
-                    setStepPassed('connect');
-                } else { // Si l'utilisateur n'existe pas
-                    mergeDelta(delta, setDelta, { email: email });
-                    setStepPassed('create');
-                }
+                mergeDelta(delta, setDelta, { email: email });
+                setStepPassed('email');
                 setState('loaded');
             } else {
-                setStepPassed('create');
+                setStepPassed('start');
                 setState('loaded');
             }
             clearTimeout(timeoutId);
@@ -76,70 +72,87 @@ const LoginPage = () => {
     }, []);
 
     useEffect(() => {
-        if (stepPassed === 'email') {
-            sendCode();
-        } else if (stepPassed === 'launch') {
-            localStorage.setItem(userPID, delta.publicIdentifier);
-            const wantedRoute = localStorage.getItem('wantedRoute');
-            if (wantedRoute) {
-                setTimeout(() => {
-                    router.push(wantedRoute);
-                }, 1000);
-            } else {
-                setTimeout(() => {
-                    router.push('@/app');
-                }, 1000);
-            }
-        } else if (stepPassed === 'launchf') {
-            localStorage.setItem('userPID', delta.publicIdentifier);
-            const wantedRoute = localStorage.getItem('wantedRoute');
-            if (wantedRoute) {
-                setTimeout(() => {
-                    router.push(wantedRoute);
-                }, 1000);
-            } else {
-                setTimeout(() => {
-                    router.push('@/app');
-                }, 1000);
+        async function watcher() {
+            if (stepPassed === 'email') {
+                const userFetcher = new UserFetcher({ email: delta.email });
+                const response = await userFetcher.restorePID();
+                console.log(response);
+                if (await response && await response.publicIdentifier) { // On vérifie si l'utilisateur existe
+                    mergeDelta(delta, setDelta, userFetcher.get());
+                    setStepPassed('connect');
+                } else { // Si l'utilisateur n'existe pas
+                    setStepPassed('create');
+                    await sendCode();
+                }
+            } else if (stepPassed === 'password') {
+                const connected = await connect(delta.password);
+                if (connected) {
+                    localStorage.setItem("userPID", delta.publicIdentifier);
+                    const wantedRoute = localStorage.getItem('wantedRoute');
+                    if (wantedRoute) {
+                        setTimeout(() => {
+                            router.push(wantedRoute);
+                        }, 1000);
+                    } else {
+                        setTimeout(() => {
+                            router.push('/');
+                        }, 1000);
+                    }
+                } else {
+                    setState('badIds');
+                }
+            } else if (stepPassed === 'passwordf') {
+                const isSuccess = await verifyCode(delta.password);
+                if (isSuccess) {
+                    localStorage.setItem('userPID', delta.publicIdentifier);
+                    const wantedRoute = localStorage.getItem('wantedRoute');
+                    if (wantedRoute) {
+                        setTimeout(() => {
+                            router.push(wantedRoute);
+                        }, 1000);
+                    } else {
+                        setTimeout(() => {
+                            router.push('/');
+                        }, 1000);
+                    }
+                } else {
+                    setState('badCode');
+                }
             }
         }
+        watcher();
     }, [stepPassed]);
 
     return (
         <Loader state={state}>
             <div>
-                {stepPassed === 'connect' ? (
-                    <div>
-                        <label>
-                            <p>Email : </p>
-                            <input type="email" value={delta.email} onChange={(e) => mergeDelta(delta, setDelta, { email: e.target.value })} />
-                        </label>
-                        <label>
-                            <p>Mot de passe : </p>
-                            <input type="password" onChange={(e) => mergeDelta(delta, setDelta, { password: e.target.value })} />
-                        </label>
-                        <button onClick={async () => {
-                            setStepPassed('password');
-                            await connect(delta.password);
-                        }
-                        }>Se connecter</button>
-                    </div>
-                ) : stepPassed === 'create' ? (
+                {stepPassed === 'connect' || stepPassed === 'password' ? (
                     <div>
                         <label>
                             <p>Email : </p>
                             <input type="text" value={delta.email} onChange={(e) => mergeDelta(delta, setDelta, { email: e.target.value })} />
                         </label>
+                        <label>
+                            <p>Mot de passe : </p>
+                            <input type="password" onChange={(e) => mergeDelta(delta, setDelta, { password: e.target.value })} />
+                        </label>
+                        <div>
+                            <button onClick={() => setStepPassed('password')}>Se connecter</button>
+                        </div>
+                        {state === 'badIds' && <p className='incorrects-ids-error-inerr2923'>Identifiants de connexion incorects</p>}
+                    </div>
+                ) : stepPassed === 'start' ? (
+                    <div>
+                        <label>
+                            <p>Email : </p>
+                            <input type="text" onChange={(e) => mergeDelta(delta, setDelta, { email: e.target.value })} />
+                        </label>
                         <div>
                             <button className='next-step-button-htrh4568' onClick={() => setStepPassed('email')}>Suivant</button>
                         </div>
                     </div>
-                ) : stepPassed === 'email' ? (
+                ) : stepPassed === 'create' ? (
                     <div>
-                        {
-                            // Ici, on execute le code pour envoyer l'email
-                            // ça implique notamment d'envoyer la requête, de la récupérer et de conserver la valeur du codeID (et du code une fois que l'utilisateur le fournis)
-                        }
                         <p>Un code d&apos;activation a été envoyé à l&apos;adresse email que vous avez fourni. Veillez rentrer ce code ci-dessous pour finaliser votre inscription.</p>
                         <label>
                             <p>Code d&apos;activation : </p>
@@ -168,23 +181,23 @@ const LoginPage = () => {
                     <div>
                         <label>
                             <p>Niveau académique : </p>
-                                {Object.entries(LANG.academicLevel).map(([key, labelText], index) => (
-                                    <label key={index}>
-                                        <input
-                                            type="radio"
-                                            name="defaultAcademicLevel"
-                                            value={key}
-                                            onChange={(e) => mergeDelta(delta, setDelta, { defaultAcademicLevel: e.target.value })}
-                                        />
-                                        {labelText}
-                                    </label>
-                                ))}
+                            {Object.entries(LANG.academicLevel).map(([key, labelText], index) => (
+                                <label key={index}>
+                                    <input
+                                        type="radio"
+                                        name="defaultAcademicLevel"
+                                        value={key}
+                                        onChange={(e) => mergeDelta(delta, setDelta, { defaultAcademicLevel: e.target.value })}
+                                    />
+                                    {labelText}
+                                </label>
+                            ))}
                         </label>
                         <div>
                             <button className='next-step-button-htrh4568' onClick={() => setStepPassed('defaultAcademicLevel')}>Suivant</button>
                         </div>
                     </div>
-                ) : stepPassed === 'defaultAcademicLevel' ? (
+                ) : stepPassed === 'defaultAcademicLevel' || stepPassed === 'passwordf' ? (
                     <div>
                         <label>
                             <p>Définissez un mot de passe : </p>
@@ -192,13 +205,10 @@ const LoginPage = () => {
                         </label>
                         {!regex.test(delta.password) && <p>Le mot de passe doit contenir 8 caractères, dont un chifre, une lettre majuscule et une lettre minuscule</p>}
                         <div>
-                            <button className='next-step-button-htrh4568' onClick={async () => {
-                                setStepPassed('password');
-                                await verifyCode(delta.password);
-                            }}>Suivant</button>
+                            <button className='next-step-button-htrh4568' onClick={setStepPassed('passwordf')}>Suivant</button>
                         </div>
                     </div>
-                ) : (stepPassed === 'password' || stepPassed === 'launch' || stepPassed === 'launchf') && (
+                ) : (stepPassed === 'launch' || stepPassed === 'launchf') && (
                     <div className='wainting-message-waimt456110'>
                         <h1>Préparation en cours</h1>
                         <h4>Vous allez être redirigé dans quelques instants</h4>

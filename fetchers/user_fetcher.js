@@ -4,7 +4,7 @@ import { AbstractFetcher } from "./abstract_fetcher";
 class UserFetcher extends AbstractFetcher {
   constructor(delta) {
     super(delta);
-    
+
     // Remarque : le serveur n'envoie jamais le mot de passe car il ne le conserve pas en claire
     // Il peut éventuellement envoyer un hash du mot de passe, mais cette fonctionnalitée ne doit pas être utilisée pour des raisons de sécurité et sera potentiellement incompatibles avec les versions futurs de l'API
     // L'utilisateur peut envoyer le mot de passe en claire au serveur. Le mot de passe sera alors haché à sa réception par le serveur

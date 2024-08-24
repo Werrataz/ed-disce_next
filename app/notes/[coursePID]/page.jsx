@@ -3,36 +3,49 @@
 
 
 // A terme, cette page devra également contenir un lien vers le drive du cours
-
+"use client";
 import { useState, useEffect } from 'react';
+import { useParams } from 'next/navigation';
 import Link from "next/link";
 import { CourseFetcher } from '@/fetchers/course_fetcher';
 import { debounce } from 'lodash';
 import Loader from '@/components/Loader';
-import mergeDelta from '@/functions/merge';
+import { mergeDelta } from '@/functions/merge';
 import Course from '@/components/Course';
 import LANG from '../../../config/language.config';
 
 
 function Page() {
 
+
+
+    // Créer un hook personnalisé pour gérer cette page
+    // Faire en sorte que ce hook puisse être utilisé pour Course, mais aussi pour User et Flashcard
+    // Je pourrais alors créer les composants flashcards comme des éléments prenant un delta et setDelta en paramètre
+    // (Pareil pour l'élément course)
+    // Bien penser l'architecture des pages avant d'attaquer le code
+
     const [state, setState] = useState('loading');
     const [delta, setDelta] = useState({});
+    const [courseList, setCourseList] = useState([]);
+    const { coursePID } = useParams();
+
+    console.log(delta);
 
     useEffect(() => {
-        async function fetchCourses() {
-            const userPID = localStorage.getItem('userPID');
-            const courseFetcher = new CourseFetcher({ user: userPID });
-            if (userPID) {
+        async function fetchCourse() {
+            if (coursePID) {
+                const courseFetcher = new CourseFetcher({ publicIdentifier: coursePID });
                 await courseFetcher.restore();
-                mergeDelta(delta, setDelta, courseFetcher.get());
+                mergeDelta(delta, setDelta, await courseFetcher.get());
                 setState('loaded');
             } else {
-                setState('disconnected');
+                setState('error');
             }
         }
-        fetchCourses();
+        fetchCourse();
     }, []);
+
 
     useEffect(() => {
         debounce(async () => {
@@ -47,15 +60,21 @@ function Page() {
     }, [delta]);
 
     return (
-        <Loader state={state}>
+        <Loader state={state} >
             <nav className='list-course-navlcroa14'>
-                {itemList.map((item) => (
-                    <Link key={item.publicIdentifier} href={`/notes/${item.publicIdentifier}`}></Link>
-                ))}
+                {delta.flashcards ? (delta.flashcards.length === 0 ? <p>Aucune flashcard créé</p> : delta.flashcards.map((flashcard) => (
+                    <Link key={flashcard.publicIdentifier} href={`/notes/${delta.publicIdentifier}/${flashcard.publicIdentifier}`}><p>{flashcard.title}</p></Link>
+                ))) : <p>Chargement...</p>}
             </nav>
-            <Course content={delta.content} />
+            {delta.content && <Course delta={delta} setDelta={setDelta} />}
         </Loader>
     );
 }
 
 export default Page;
+
+
+// Récupérer les données du course
+// (Gérer les erreurs)
+// Afficher la liste des flashcards avec course.flashcards
+// Afficher le contenu du cours (il faudra trouver un moyen d'obtenir le delta)

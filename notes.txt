@@ -26,3 +26,27 @@ Notes du 19 aout au soir :
 Il y a un problème dans une requête de création de cours pour la page notes/new
 Tester avec des requêtes envoyées depuis d'autres sources (et sinon retester directement par ce que c'est peut-être un CORS Policy)
 
+
+Il faut également faire en sorte que le menu ne s'affiche pas sur la page de connexion
+La solution simple : mettre la page de connexion à la racine, et rebasculer toutes les autres pages dans un dossier (éventuellement masqué) avec un layout
+
+
+Notes pour le fichier course.js : 
+  // Créer ici une variable qui sauvegarde la valeur de la balise active
+  // La balise active est celle dans laquelle est présent le curseur de l'utilisateur
+  // Il n'y a pas forcement de balise active, mais si il y en a une, alors elle est la seule à être active
+  // La balise active hérite de deux effets : Si l'utilisateur appuie
+  // deux fois de suite sur Space, alors on ajoute une balise juste après la balise active et on place le curseur dans cette balise, qui devient la nouvelle balise active
+  // Si l'utilisateur appuis sur backspace alors que la balise active est vide, alors on supprime la balise active
+  // Reréfléchir à cette structure en la comparant à celle que j'ai tenté d'implémenter pour l'instant
+  //
+  // Ensuite enchainer rapidement sur la page de l'architecture des flashcards (celle pour les faire afficher) et sur la révision des flashcards ensuite
+
+
+
+J'étais en train de regarder comment refaire l'éditeur Quill
+J'ai trouvé la bibliothéque du mec qui a fait l'autre truc : 
+https://justamouse.com/mathquill4quill/reactjs/
+J'essaye d'utiliser le code du github qui est ici : https://github.com/c-w/mathquill4quill
+J'ai commencé à modifier le code dans Editor.js, poursuivre pour voir ce que je peux en faire
+
