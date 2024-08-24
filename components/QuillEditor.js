@@ -70,6 +70,7 @@ function Toolbar({ uniqueId, isActive }) {
 
 class QuillEditor extends React.Component {
   static compt = 0;
+  static active = null;
 
   constructor(props) {
     super(props);
@@ -77,9 +78,7 @@ class QuillEditor extends React.Component {
     this.attachQuillRefs = this.attachQuillRefs.bind(this);
     this.didAttachQuillRefs = false;
     this.code = ++QuillEditor.compt;
-    this.isActive = false;
-    this.handleFocus = this.handleFocus.bind(this);
-    this.handleBlur = this.handleBlur.bind(this);
+    console.log(this.props);
   }
 
   componentDidMount() {
@@ -114,21 +113,16 @@ class QuillEditor extends React.Component {
   }
 
   handleFocus() {
-    this.isActive = true;
-    console.log(this.isActive);
-    console.log(this.code);
-  }
-
-  handleBlur() {
-    this.isActive = false;
-    console.log(this.isActive);
-    console.log(this.code);
+    QuillEditor.active = this;
   }
 
   render() {
     return (
       <div>
-        <Toolbar uniqueId={"toolbar-" + this.code} isActive={this.isActive} />
+        <Toolbar
+          uniqueId={"toolbar-" + this.code}
+          isActive={this.props.isActive}
+        />
         <ReactQuill
           ref={this.reactQuill}
           modules={{
@@ -138,8 +132,8 @@ class QuillEditor extends React.Component {
           theme={"snow"}
           placeholder={this.props.placeholder}
           bounds={".quill"}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
+          onFocus={this.props.onFocus}
+          onBlur={this.props.onBlur}
         />
       </div>
     );
