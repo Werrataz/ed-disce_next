@@ -41,6 +41,8 @@ export default function Page() {
                         alt="Fork me on GitHub"
                     />
                 </a>
+                <Editor key={3} />
+
             </footer>
         </div>
     );

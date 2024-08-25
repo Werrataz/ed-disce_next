@@ -1,12 +1,34 @@
-.toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 10px;
-    background-color: #f8f8f8;
-    border-bottom: 1px solid #e0e0e0;
-}
-
 .hide {
     display: none;
+}
+
+.ql-tooltip.ql-editing.ql-flip {
+    z-index: 9999;
+}
+
+.ql-personalized-color {
+    /* le background color doit être défini dans le js */
+    border-radius: 5px;
+    margin: 0 5px;
+    max-width: 10px;
+}
+
+
+.ql-toolbar,
+.ql-container {
+    border-radius: 10px;
+    border: none;
+    background-color: #ffffff;
+}
+
+.ql-editor {
+    font-size: 16px;
+}
+
+.toolbar {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
 }

@@ -2,7 +2,6 @@ import $ from "jquery";
 import katex from "katex";
 import React from "react";
 import ReactQuill, { Quill } from "react-quill";
-import { v4 as uuidv4 } from "uuid";
 
 import "katex/dist/katex.min.css";
 import "@edtr-io/mathquill/build/mathquill.css";
@@ -18,50 +17,35 @@ if (typeof window !== "undefined") {
   require("@edtr-io/mathquill/build/mathquill.js");
 }
 
-function Toolbar({ uniqueId, isActive }) {
-  const [isVisible, setIsVisible] = React.useState(false);
-
-  React.useEffect(() => {
-    setIsVisible(isActive);
-    console.log(isActive);
-  }, [isActive]);
-
+function Toolbar({ uniqueId, toolbarRef, isActive, applyColor }) {
   return (
-    <div className={isVisible ? "toolbar" : "toolbar hide"}>
+    <div className={isActive ? "toolbar" : "toolbar hide"}>
       <div id={uniqueId}>
-        <select className="ql-header">
-          <option value="1">Titre</option>
-          <option value="2">Sous-titre</option>
-          <option value="">Normal</option>
-        </select>
+        <button className="ql-header" value="1"></button>
+        <button className="ql-header" value="2"></button>
         <button className="ql-bold"></button>
         <button className="ql-italic"></button>
         <button className="ql-underline"></button>
-        <button className="ql-strike"></button>
-        <select className="ql-color">
-          <option value="#000000"></option>
-          <option value="#e60000"></option>
-          <option value="#ff9900"></option>
-          <option value="#ffff00"></option>
-          <option value="#008a00"></option>
-          <option value="#0066cc"></option>
-        </select>
-        <select className="ql-background">
-          <option value=""></option>
-          <option value="rgba(255, 153, 0, 0.3)"></option>
-          <option value="rgba(255, 255, 0, 0.3)"></option>
-          <option value="rgba(0, 138, 0, 0.3)"></option>
-          <option value="rgba(0, 102, 204, 0.3)"></option>
-          <option value="rgba(153, 51, 255, 0.3)"></option>
-        </select>
         <button className="ql-list" value="ordered"></button>
         <button className="ql-list" value="bullet"></button>
-        <select className="ql-align">
-          <option value=""></option>
-          <option value="center"></option>
-          <option value="right"></option>
-          <option value="justify"></option>
-        </select>
+        <button className="ql-align" value=""></button>
+        <button className="ql-align" value="right"></button>
+        <button className="ql-align" value="center"></button>
+        <button
+          className="ql-personalized-color"
+          style={{ backgroundColor: "#000000" }}
+          onClick={() => applyColor("#000000")}
+        ></button>
+        <button
+          className="ql-personalized-color"
+          style={{ backgroundColor: "#ff0000" }}
+          onClick={() => applyColor("#ff0000")}
+        ></button>
+        <button
+          className="ql-personalized-color"
+          style={{ backgroundColor: "#0000ff" }}
+          onClick={() => applyColor("#0000ff")}
+        ></button>
         <button className="ql-formula"></button>
       </div>
     </div>
@@ -88,6 +72,10 @@ class QuillEditor extends React.Component {
     }
   }
 
+  handleDocumentClick = (event) => {
+    console.log("Element clicked:", event.target);
+  };
+
   attachQuillRefs() {
     const enableMathQuillFormulaAuthoring = window.mathquill4quill({
       Quill,
@@ -112,16 +100,18 @@ class QuillEditor extends React.Component {
     });
   }
 
-  handleFocus() {
-    QuillEditor.active = this;
-  }
+  applyColor = (color) => {
+    this.reactQuill.current.editor.format("color", color);
+  };
 
   render() {
     return (
-      <div>
+      <div onFocus={this.props.whenDivGetFocused}>
         <Toolbar
+          toolbarRef={this.props.divRef}
           uniqueId={"toolbar-" + this.code}
           isActive={this.props.isActive}
+          applyColor={this.applyColor}
         />
         <ReactQuill
           ref={this.reactQuill}
@@ -132,8 +122,8 @@ class QuillEditor extends React.Component {
           theme={"snow"}
           placeholder={this.props.placeholder}
           bounds={".quill"}
-          onFocus={this.props.onFocus}
-          onBlur={this.props.onBlur}
+          onFocus={(event) => this.props.onFocus(event, this.props.isActive)}
+          onBlur={(event) => this.props.onBlur(event, this.props.isActive)}
         />
       </div>
     );
@@ -141,6 +131,9 @@ class QuillEditor extends React.Component {
 }
 
 export default QuillEditor;
+
+// Retenter la version avec static et l'autre truc
+// NON (par ce qu'il faut que les éditeurs n'apparaissent que quand l'utilisateur est dans une fenètre éditable)
 
 // Créer un élément isActive qui vient s'activer ou se désactiver
 // Avec onBlur et onFocus

@@ -63,3 +63,18 @@ export default function Course({ delta, setDelta }) {
     </div>
   );
 }
+
+// Récupérer la liste des knowledges ici
+// Charger la liste des knowledges
+// A chaque fois qu'un onFocus se déclanche dans un knowledge, le knowledge en question modifie la valeur
+// d'un paramètre dans "course"
+// Course créé un listener sur l'appui sur le clavier dans le knowledge actif
+// (Le listener est recréé à chaque fois qu'un nouveau knowledge devient actif, avec [activeKnowledge])
+// Si l'utilisateur a appuyé sur entrée, on crée un nouveau knowledge (++)
+// juste après celui actif (très compliqué)
+// et on place le curseur dedans (compliqué = selectionner le nouveau knowledge (compliqué), puis placer le curseur dedans (facile))
+// Si l'utilisateur a appuyé sur backspace (facile)
+// Et qu'il y a un knowledge actif (facile)
+// Et qu'il est vide (très compliqué...)
+// On supprime le knowledge actif (compliqué)
+// Voila !
