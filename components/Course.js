@@ -1,4 +1,5 @@
-import Editor from "./Editor";
+import { useState } from "react";
+import Knowledge from "./Knowledge";
 import { mergeDelta } from "@/functions/merge";
 // import "../css/Course.css";
 
@@ -50,16 +51,35 @@ import { mergeDelta } from "@/functions/merge";
 // Les deltas sont donc dans le projet une représentation d'un objet visible pour l'utilisateur sous forme de données.
 // */
 
+const List = [
+  "azef",
+  "azftgs",
+  "Bonjour",
+  "à ",
+  "tous",
+  "les",
+  "gens",
+  "qui",
+  "sont",
+  "là",
+  "aujourd'hui",
+  "comment",
+  "ça",
+  "va",
+];
+
 export default function Course({ delta, setDelta }) {
+  const [activeKnowledge, setActiveKnowledge] = useState("");
   return (
     <div className="course">
-      <Editor
-        value={delta.content}
-        onChange={(event) => {
-          console.log(event);
-          mergeDelta(delta, setDelta, { content: event });
-        }}
-      />
+      {List.map((value, index) => (
+        <Knowledge
+          key={index}
+          publicIdentifier={value}
+          activeKnowledge={activeKnowledge}
+          setActiveKnowledge={setActiveKnowledge}
+        />
+      ))}
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import { useCallback, useRef, useState } from "react";
 import Editor from "./Editor.js";
 import { debounce } from "lodash";
-import "../css/Notion.css";
 import { FR } from "../config/language.config";
-import { emptyEditor } from "../config/course.config";
+import "../css/Notion.css";
+// import { emptyEditor } from "../config/course.config";
+import { mergeDelta } from "@/functions/merge.js";
 
 // On définie cette fonction au début du fichier, de sorte qu'elle ne s'execute qu'une seule fois
 const logValue = debounce((val) => {
@@ -11,33 +12,25 @@ const logValue = debounce((val) => {
 }, 1000);
 
 function CommentZone({ question, setQuestion, comment, setComment }) {
-  const handleQuestionChange = (event) => {
-    setQuestion(event.target.value);
-  };
-
-  const handleCommentChange = (event) => {
-    setComment(event.target.value);
-  };
-
   return (
     <div className="comment-zone">
       <textarea
         className="question"
         placeholder="question"
         value={question}
-        onChange={handleQuestionChange}
+        onChange={setQuestion}
       ></textarea>
       <textarea
         className="comment"
         placeholder="commentaire"
         value={comment}
-        onChange={handleCommentChange}
+        onChange={setComment}
       ></textarea>
     </div>
   );
 }
 
-function Buttons({ question }) {
+function Buttons({ question, flashcardPID }) {
   return (
     <div className="buttons-container">
       {question && (
@@ -45,110 +38,37 @@ function Buttons({ question }) {
           {FR.CreateFlashcard}
         </button>
       )}
+      {flashcardPID && <button>Voir la flashcard</button>}
     </div>
   );
 }
 
-function Content({ index, content, setContent }) {
-  return (
-    <Editor
-      index={index}
-      extraClass="content"
-      value={content}
-      onChange={setContent}
-    />
-  );
-}
-
 // Le terme notion n'est pas très claire, on pourrait tout renomer en knowledge (pour symboliser la brique de savoir)
-function Knowledge({ index, course, setCourse, delta }) {
-  const ref = useRef(null);
-  const [question, setQuestion] = useState(delta.question ?? "");
-  const [comment, setComment] = useState(delta.comment ?? "");
-  const [content, setContent] = useState(delta.content ?? [{ insert: "\n" }]);
-  const [onFocus, setOnFocus] = useState(false);
-
-  console.log(onFocus + " " + index);
-
-  const handleKnowledgeManager = useCallback((event) => {
-    if (event.code === "Enter") {
-      console.log("Enter" + index);
-      event.preventDefault();
-      const newKnowledge = {
-        question: "azer",
-        comment: "qsdfwxcv",
-        ops: emptyEditor,
-      };
-      course.splice(index + 1, 0, newKnowledge);
-      setCourse([...course]);
-      setTimeout(() => {
-        const newKnowledgeElement = document.querySelector(
-          `#quill-${index + 1} .ql-container .ql-editor`
-        );
-        console.log(newKnowledgeElement);
-        console.log("Dans handle.Enter " + index);
-        if (newKnowledgeElement) {
-          newKnowledgeElement.focus();
-        }
-      }, 1);
-    } else if (
-      content === "<p><br></p>" &&
-      event.code === "Backspace" &&
-      comment === "" &&
-      question === ""
-    ) {
-      console.log("Backspace" + index);
-      course.splice(index, 1);
-      setCourse([...course]);
-      setTimeout(() => {
-        const newKnowledgeElement = document.querySelector(
-          `#quill-${index - 1} .ql-container .ql-editor`
-        );
-        console.log(newKnowledgeElement);
-        console.log("Dans handle.Backspace " + index);
-        if (newKnowledgeElement) {
-          newKnowledgeElement.focus();
-        }
-      }, 1);
-    }
-  });
-
-  const addEvents = () => {
-    console.log("addEvents" + index);
-    if (onFocus === false) {
-      console.log("onFocus " + onFocus);
-      setOnFocus(true);
-      console.log(window);
-      window.addEventListener("keydown", handleKnowledgeManager);
-      console.log("end of addEvent " + onFocus);
-    }
-  };
-
-  // Les events ne disaraissent pas
-
-  const removeEvents = () => {
-    console.log("removeEvents" + index);
-    if (onFocus === true) {
-      console.log("onFocusRemove" + onFocus);
-      setOnFocus(false);
-      window.removeEventListener("keydown", handleKnowledgeManager);
-      console.log("end of removeEvent " + onFocus);
-    }
-  };
-
-  logValue({ question: question, comment: comment, ops: content });
+function Knowledge({ publicIdentifier, activeKnowledge, setActiveKnowledge }) {
+  const [delta, setDelta] = useState({}); // Ici remplacer par mon hook personalisé pour récupérer delta, les states ect... à partir de publicIdentifier
+  console.log(setDelta);
   return (
-    <div className="knowledge" id={"knowledge-" + index}>
+    <div className="knowledge" id={"knowledge-" + publicIdentifier}>
       <CommentZone
-        question={question}
-        setQuestion={setQuestion}
-        comment={comment}
-        setComment={setComment}
+        question={delta.question}
+        setQuestion={(event) =>
+          mergeDelta(delta, setDelta, { question: event.target.value })
+        }
+        comment={delta.comment}
+        setComment={(event) =>
+          mergeDelta(delta, setDelta, { comment: event.target.value })
+        }
       />
-      <div onClick={addEvents} onBlur={removeEvents} tabIndex="0">
-        <Content index={index} content={content} setContent={setContent} />
-      </div>
-      <Buttons question={question} />
+      <Editor
+        key={publicIdentifier}
+        value={delta.content}
+        onFocus={() => setActiveKnowledge(publicIdentifier)}
+        onChange={(value) => {
+          mergeDelta(delta, setDelta, { content: value });
+        }}
+      />
+
+      <Buttons question={delta.question} />
     </div>
   );
 }

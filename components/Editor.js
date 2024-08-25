@@ -6,8 +6,7 @@ const QuillEditor = dynamic(
   { ssr: false, loading: () => <p>Editor loading ...</p> }
 );
 
-function Editor({ onFocus, placeholder }) {
-  const quillEditor = useRef();
+function Editor({ value, onFocus, onBlur, onClick, onChange, placeholder }) {
   const [isActive, setIsActive] = useState(false);
   const handleFocus = useCallback((event, isActive) => {
     if (!isActive) {
@@ -22,11 +21,12 @@ function Editor({ onFocus, placeholder }) {
   return (
     <QuillEditor
       whenDivGetFocused={onFocus}
-      divRef={quillEditor}
+      value={value}
       isActive={isActive}
       onFocus={handleFocus}
       onBlur={handleBlur}
       placeholder={placeholder}
+      onChange={onChange}
     />
   );
 }

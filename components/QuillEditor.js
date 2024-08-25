@@ -17,7 +17,7 @@ if (typeof window !== "undefined") {
   require("@edtr-io/mathquill/build/mathquill.js");
 }
 
-function Toolbar({ uniqueId, toolbarRef, isActive, applyColor }) {
+function Toolbar({ uniqueId, isActive, applyColor }) {
   return (
     <div className={isActive ? "toolbar" : "toolbar hide"}>
       <div id={uniqueId}>
@@ -108,22 +108,24 @@ class QuillEditor extends React.Component {
     return (
       <div onFocus={this.props.whenDivGetFocused}>
         <Toolbar
-          toolbarRef={this.props.divRef}
           uniqueId={"toolbar-" + this.code}
           isActive={this.props.isActive}
           applyColor={this.applyColor}
         />
         <ReactQuill
+          className="editor"
           ref={this.reactQuill}
           modules={{
             formula: true,
             toolbar: { container: `#toolbar-${this.code}` },
           }}
+          value={this.props.value}
           theme={"snow"}
           placeholder={this.props.placeholder}
           bounds={".quill"}
           onFocus={(event) => this.props.onFocus(event, this.props.isActive)}
           onBlur={(event) => this.props.onBlur(event, this.props.isActive)}
+          onChange={this.props.onChange}
         />
       </div>
     );

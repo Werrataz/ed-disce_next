@@ -13,16 +13,16 @@
     max-width: 10px;
 }
 
-
 .ql-toolbar,
 .ql-container {
     border-radius: 10px;
-    border: none;
     background-color: #ffffff;
+    border: none !important;
 }
 
 .ql-editor {
     font-size: 16px;
+    border: none;
 }
 
 .toolbar {
