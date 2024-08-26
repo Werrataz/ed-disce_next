@@ -1,0 +1,54 @@
+.knowledge {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.comment-zone,
+.buttons-container {
+    flex: 1 1 16.66%;
+}
+
+.editor-container {
+    flex: 4 1 66.66%;
+    max-width: 70%;
+}
+
+textarea {
+    border: none;
+    resize: none;
+    /* Pour éviter le redimensionnement des textarea */
+    width: 100%;
+    /* Vous pouvez ajuster la hauteur selon vos besoins */
+    box-sizing: border-box;
+}
+
+textarea:focus {
+    outline: none;
+    /* Supprimer la bordure lors du focus */
+}
+
+textarea::-webkit-scrollbar {
+    width: 4px;
+    /* Largeur de la barre de défilement */
+}
+
+textarea::-webkit-scrollbar-thumb {
+    background-color: blue;
+    /* Couleur de la barre de défilement */
+    border-radius: 6px;
+    /* Arrondir les coins de la barre de défilement */
+}
+
+textarea::-webkit-scrollbar-button {
+    display: none;
+    /* Masquer les flèches de la barre de défilement */
+}
+
+.buttons-container button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    box-sizing: border-box;
+}

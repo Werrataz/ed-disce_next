@@ -106,7 +106,7 @@ class QuillEditor extends React.Component {
 
   render() {
     return (
-      <div onFocus={this.props.whenDivGetFocused}>
+      <div className="editor-container" onFocus={this.props.whenDivGetFocused}>
         <Toolbar
           uniqueId={"toolbar-" + this.code}
           isActive={this.props.isActive}

@@ -1,8 +1,9 @@
 import { useCallback, useRef, useState } from "react";
 import Editor from "./Editor.js";
 import { debounce } from "lodash";
+import { v4 as uuidv4 } from "uuid";
 import { FR } from "../config/language.config";
-import "../css/Notion.css";
+import "@/app/css/features/knowledge.css";
 // import { emptyEditor } from "../config/course.config";
 import { mergeDelta } from "@/functions/merge.js";
 
@@ -45,8 +46,33 @@ function Buttons({ question, flashcardPID }) {
 
 // Le terme notion n'est pas très claire, on pourrait tout renomer en knowledge (pour symboliser la brique de savoir)
 function Knowledge({ publicIdentifier, activeKnowledge, setActiveKnowledge }) {
-  const [delta, setDelta] = useState({}); // Ici remplacer par mon hook personalisé pour récupérer delta, les states ect... à partir de publicIdentifier
-  console.log(setDelta);
+  // const [delta, setDelta] = useState({}); // Ici remplacer par mon hook personalisé pour récupérer delta, les states ect... à partir de publicIdentifier
+  // Code du hook personalisé : 
+//   if(publicIdentifier) {
+//     const [state, setState] = useState('loading');
+//     const [delta, setDelta] = useState({publicIdentifier: publicIdentifier});
+//     const knowledgeFetcher = new KnowledgeFetcher(delta);
+//     const response = await knowledgeFetcher.restore();
+//     if(response) {
+//       setDelta(response);
+//     } else {
+//       setState('error');
+//     }
+
+// } else {
+//     const [delta, setDelta] = useState({publicIdentifier: uuidv4()});
+//     const knowledgeFetcher = new KnowledgeFetcher(publicIdentifier);
+//     const response = await knowledgeFetcher.create();
+//     if(response) {
+//       setDelta(response);
+//     } else {
+//       setState('error');
+//     }
+
+//   }
+
+  // Pour le code dans course : faire la page dans course avec les 5 ou 6 boutons pour accéder aux différentes pages
+  
   return (
     <div className="knowledge" id={"knowledge-" + publicIdentifier}>
       <CommentZone
@@ -61,11 +87,12 @@ function Knowledge({ publicIdentifier, activeKnowledge, setActiveKnowledge }) {
       />
       <Editor
         key={publicIdentifier}
-        value={delta.content}
+        value={publicIdentifier}
         onFocus={() => setActiveKnowledge(publicIdentifier)}
         onChange={(value) => {
           mergeDelta(delta, setDelta, { content: value });
         }}
+        placeholder={"Contenu"}
       />
 
       <Buttons question={delta.question} />
