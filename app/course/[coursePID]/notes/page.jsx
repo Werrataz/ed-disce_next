@@ -6,13 +6,9 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
-import Link from "next/link";
-import { CourseFetcher } from '@/fetchers/course_fetcher';
-import { debounce } from 'lodash';
 import Loader from '@/components/Loader';
-import { mergeDelta } from '@/functions/merge';
 import Course from '@/components/Course';
-import useLoadCourse from '../../../../hooks/loadCourse';
+import useManageCourse from '@/hooks/manageCourse';
 import LANG from '@/config/language.config';
 
 import '@/app/css/notes.css';
@@ -30,7 +26,7 @@ function Page() {
     // https://www.npmjs.com/package/@mdxeditor/editor
     // Ou en cherchant 'rich-text-editor' sur npm
 
-    const { delta, setDelta, state, setState } = useLoadCourse();
+    const { delta, setDelta, state, setState } = useManageCourse();
 
     console.log(delta);
 

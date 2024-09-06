@@ -1,5 +1,11 @@
 
 
+Les problèmes qu'il reste à régler : 
+- Les évènements se déclanchent 2 fois
+- Les évènements se déclanchent aussi lorsque je ne suis pas dans une zone
+
+Solution : créer l'évènement à chaque fois que je onFocus un élément, et l'enlever lorsque je onBlur.
+
 
 Il y a un bug d'affichage à régler dans la vue review (ça s'affiche pas...)
 

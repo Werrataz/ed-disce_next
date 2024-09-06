@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import Knowledge from "./Knowledge";
 import { mergeDelta } from "@/functions/merge";
+import useManageCourse from "@/hooks/manageCourse";
 import Editor from "./Editor";
+import Loader from "@/components/Loader"
 import { v4 as uuidv4 } from "uuid";
 // import "../css/Course.css";
 
@@ -72,6 +74,8 @@ const List = [
 
 export default function Course({ delta, setDelta }) {
 
+    const [content, setContent] = useState(delta.content);
+
     const [activeKnowledge, setActiveKnowledge] = useState("");
 
     const [step, setStep] = useState(0);
@@ -84,32 +88,49 @@ export default function Course({ delta, setDelta }) {
         function handleKeyDown(event) {
             console.log("handleKeyDown");
             if (event.key === "Enter") {
+                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
                 console.log("Enter");
-                console.log(delta.content.indexOf(activeKnowledge));
-                const index = delta.content.indexOf(activeKnowledge);
-                const publicIdentifier = uuidv4();
-                let newContent = [...delta.content];
-                console.log(delta.content);
-                console.log(newContent);
-                newContent.push(publicIdentifier);
-                console.log(newContent);
-                mergeDelta(delta, setDelta, { content: newContent });
+                console.log(delta);
+                if (delta.content) {
+                    event.preventDefault();
+                    console.log(delta.content.indexOf(activeKnowledge));
+                    const index = delta.content.indexOf(activeKnowledge);
+                    const publicIdentifier = uuidv4();
+                    let newContent = content;
+                    console.log(delta.content);
+                    console.log(newContent);
+                    newContent.push(publicIdentifier);
+                    console.log(newContent); // Faire l'enregistrement de delta de course lorsque celui-ci est modifié
+                    setContent([...content, publicIdentifier]);
+                    console.log(delta);
+                }
 
                 // Lors de la création d'un nouveau knowledge, il faudra générer un uuid
                 // pour l'enregistrer (et ajouter l'uuid à la liste au bon endroit)
             } else if (event.key === "Backspace") {
-                console.log("Backspace");
-                console.log(delta.content.indexOf(activeKnowledge));
-                // Action à effectuer lorsque la touche Backspace est pressée
-                // Vérifier s'il y a un knowledge actif
-                // Vérifier si le knowledge actif est vide
-                // Supprimer le knowledge actif
+                if (delta.content) {
+                    console.log("Backspace");
+                    console.log(delta.content.indexOf(activeKnowledge));
+                    // Action à effectuer lorsque la touche Backspace est pressée
+                    // Vérifier s'il y a un knowledge actif
+                    // Vérifier si le knowledge actif est vide
+                    // Supprimer le knowledge actif
+                }
             }
         }
 
         document.addEventListener("keydown", handleKeyDown);
 
-    }, []);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+            console.log("Event listener removed");
+        };
+
+    }, [delta, setDelta, activeKnowledge]);
+
+    useEffect(() => {
+        console.log("delta changed", delta);
+    }, [delta]);
 
     // useEffect(() => {
     // il faudra gérer les enregistrements de delta (soit dans le hook de la balise parente)
@@ -117,9 +138,9 @@ export default function Course({ delta, setDelta }) {
 
     return (
         <div className="course">
-            {delta.content && delta.content.map((value, index) => (
+            {content.map((value) => (
                 <Knowledge
-                    key={value ?? index}
+                    key={value}
                     publicIdentifier={value}
                     activeKnowledge={activeKnowledge}
                     setActiveKnowledge={setActiveKnowledge}

@@ -54,44 +54,40 @@ function Knowledge({ publicIdentifier, activeKnowledge, setActiveKnowledge }) {
     console.log(delta);
 
     return (
-        <Loader state={state}>
-            <div className="knowledge" id={"knowledge-" + publicIdentifier}>
-                {delta.knowledge && <CommentZone
-                    question={delta.knowledge.question}
-                    setQuestion={(event) => {
-                        const knowledge = delta.knowledge;
-                        knowledge.question = event.target.value;
-                        console.log(knowledge);
-                        mergeDelta(delta, setDelta, { knowledge: knowledge });
-                        console.log(delta);
-                    }}
-                    comment={delta.knowledge.comment}
-                    setComment={(event) => {
-                        const knowledge = delta.knowledge;
-                        knowledge['comment'] = event.target.value;
-                        console.log(knowledge);
-                        mergeDelta(delta, setDelta, { knowledge: knowledge })
-                    }}
-                />}
-                {delta && delta.knowledge && <Editor
-                    key={publicIdentifier}
-                    value={{ ops: delta.knowledge.ops }}
-                    onFocus={() => setActiveKnowledge(publicIdentifier)}
-                    onChange={(value) => {
-                        console.log("in onChange");
-                        console.log(value);
-                        console.log(delta.knowledge);
-                        const knowledge = delta.knowledge;
-                        knowledge.ops = value.ops;
-
-                        console.log(knowledge);
-                        mergeDelta(delta, setDelta, { knowledge: knowledge });
-                    }}
-                />
-                }
-                <Buttons question={delta.question} />
-            </div>
-        </Loader>
+        <div className="knowledge" id={"knowledge-" + publicIdentifier}>
+            <CommentZone
+                question={delta.knowledge.question}
+                setQuestion={(event) => {
+                    const knowledge = delta.knowledge;
+                    knowledge.question = event.target.value;
+                    console.log(knowledge);
+                    mergeDelta(delta, setDelta, { knowledge: knowledge });
+                    console.log(delta);
+                }}
+                comment={delta.knowledge.comment}
+                setComment={(event) => {
+                    const knowledge = delta.knowledge;
+                    knowledge['comment'] = event.target.value;
+                    console.log(knowledge);
+                    mergeDelta(delta, setDelta, { knowledge: knowledge })
+                }}
+            />
+            <Editor
+                key={publicIdentifier}
+                value={{ ops: delta.knowledge.ops }}
+                onFocus={() => setActiveKnowledge(publicIdentifier)}
+                onChange={(value) => {
+                    console.log("in onChange");
+                    console.log(value);
+                    console.log(delta.knowledge);
+                    const knowledge = delta.knowledge;
+                    knowledge.ops = value.ops;
+                    console.log(knowledge);
+                    mergeDelta(delta, setDelta, { knowledge: knowledge });
+                }}
+            />
+            <Buttons question={delta.knowledge.question} />
+        </div>
     );
 }
 

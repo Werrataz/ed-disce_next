@@ -6,16 +6,20 @@ import { useParams } from "next/navigation";
 
 export default function useManageKnowledge(publicIdentifier) {
 
-    const [delta, setDelta] = useState({});
+    const coursePID = useParams().coursePID;
+    const [delta, setDelta] = useState({
+        knowledge: { question: "", comment: "", ops: [] },
+        publicIdentifier: publicIdentifier,
+        course: coursePID
+    });
     const [state, setState] = useState("loading");
-    const { coursePID } = useParams();
     console.log("knowledge");
 
     useEffect(() => {
         console.log("useEffect");
         const fetchKnowledge = async () => {
             console.log("fetchKnowledge");
-            const flashcardFetcher = new FlashcardFetcher({ publicIdentifier: publicIdentifier });
+            const flashcardFetcher = new FlashcardFetcher(delta);
             const response = await flashcardFetcher.restoreKnowledge();
             if (await response && await response.publicIdentifier) {
                 console.log("response for restoreKnowledge");
@@ -26,6 +30,7 @@ export default function useManageKnowledge(publicIdentifier) {
             } else { // Rajouter ici le cas ou knowledge n'existe pas encore
                 console.log("response for createKnowledge");
                 const flashcardFetcher = new FlashcardFetcher({
+                    publicIdentifier: publicIdentifier,
                     course: coursePID
                 });
                 console.log(flashcardFetcher);
@@ -70,3 +75,5 @@ export default function useManageKnowledge(publicIdentifier) {
 
     return { delta, setDelta, state, setState };
 }
+
+// Idée : j'écris une structure de base dans manageKnowledge qui me permet de virer les vérifications pour que le truc s'affiche tout de suite
