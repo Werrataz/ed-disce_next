@@ -74,6 +74,11 @@ const LoginPage = () => {
     useEffect(() => {
         async function watcher() {
             if (stepPassed === 'email') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(delta.email)) {
+                    setStepPassed('invalidEmail');
+                    return;
+                }
                 const userFetcher = new UserFetcher({ email: delta.email });
                 const response = await userFetcher.restorePID();
                 console.log(response);
@@ -99,7 +104,7 @@ const LoginPage = () => {
                         }, 1000);
                     }
                 } else {
-                    setState('badIds');
+                    setStepPassed('badIds');
                 }
             } else if (stepPassed === 'passwordf') {
                 const isSuccess = await verifyCode(delta.password);
@@ -126,7 +131,7 @@ const LoginPage = () => {
     return (
         <Loader state={state}>
             <div>
-                {stepPassed === 'connect' || stepPassed === 'password' ? (
+                {stepPassed === 'connect' || stepPassed === 'password' || stepPassed === 'badIds' ? (
                     <div>
                         <label>
                             <p>Email : </p>
@@ -139,9 +144,10 @@ const LoginPage = () => {
                         <div>
                             <button onClick={() => setStepPassed('password')}>Se connecter</button>
                         </div>
-                        {state === 'badIds' && <p className='incorrects-ids-error-inerr2923'>Identifiants de connexion incorects</p>}
+                        {stepPassed === 'password' && <Loader state='loading' />}
+                        {stepPassed === 'badIds' && <p className='incorrects-ids-error-inerr2923'>Identifiants de connexion incorects</p>}
                     </div>
-                ) : stepPassed === 'start' ? (
+                ) : stepPassed === 'start' || stepPassed === 'email' || stepPassed === 'invalidEmail' ? (
                     <div>
                         <label>
                             <p>Email : </p>
@@ -150,10 +156,11 @@ const LoginPage = () => {
                         <div>
                             <button className='next-step-button-htrh4568' onClick={() => setStepPassed('email')}>Suivant</button>
                         </div>
+                        {stepPassed === 'invalidEmail' && <p>Cette adresse email n&apos;est pas valide</p>}
                     </div>
                 ) : stepPassed === 'create' ? (
                     <div>
-                        <p>Un code d&apos;activation a été envoyé à l&apos;adresse email que vous avez fourni. Veillez rentrer ce code ci-dessous pour finaliser votre inscription.</p>
+                        <p>Un code d&apos;activation a été envoyé à l&apos;adresse email que vous avez fourni. Veillez rentrer ce code ci-dessous pour poursuivre votre inscription.</p>
                         <label>
                             <p>Code d&apos;activation : </p>
                             <input type="text" onChange={(e) => mergeDelta(delta, setDelta, { code: e.target.value })} />
@@ -163,7 +170,7 @@ const LoginPage = () => {
                         </div>
                         <div>
                             <button className='small-button-option-gzerh6' onClick={() => sendCode(delta)} >Renvoyer le code</button>
-                            <button className='small-button-option-gzerh6' onClick={() => setStepPassed('create')} >Modifier l&apos;adresse email</button>
+                            <button className='small-button-option-gzerh6' onClick={() => setStepPassed('start')} >Modifier l&apos;adresse email</button>
                         </div>
                     </div>
                 ) : stepPassed === 'code' ? (

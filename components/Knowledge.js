@@ -1,103 +1,98 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Editor from "./Editor.js";
 import { debounce } from "lodash";
 import { v4 as uuidv4 } from "uuid";
+import useManageKnowledge from "@/hooks/manageKnowledge.js";
 import { FR } from "../config/language.config";
 import "@/app/css/features/knowledge.css";
 // import { emptyEditor } from "../config/course.config";
 import { mergeDelta } from "@/functions/merge.js";
+import Loader from '@/components/Loader';
 
-// On définie cette fonction au début du fichier, de sorte qu'elle ne s'execute qu'une seule fois
+
 const logValue = debounce((val) => {
-  console.log(val);
+    console.log(val);
 }, 1000);
 
 function CommentZone({ question, setQuestion, comment, setComment }) {
-  return (
-    <div className="comment-zone">
-      <textarea
-        className="question"
-        placeholder="question"
-        value={question}
-        onChange={setQuestion}
-      ></textarea>
-      <textarea
-        className="comment"
-        placeholder="commentaire"
-        value={comment}
-        onChange={setComment}
-      ></textarea>
-    </div>
-  );
+    return (
+        <div className="comment-zone">
+            <textarea
+                className="question"
+                placeholder="question"
+                value={question}
+                onChange={setQuestion}
+            ></textarea>
+            <textarea
+                className="comment"
+                placeholder="commentaire"
+                value={comment}
+                onChange={setComment}
+            ></textarea>
+        </div>
+    );
 }
 
 function Buttons({ question, flashcardPID }) {
-  return (
-    <div className="buttons-container">
-      {question && (
-        <button title={`Créer une flashcard avec la question "${question}"`}>
-          {FR.CreateFlashcard}
-        </button>
-      )}
-      {flashcardPID && <button>Voir la flashcard</button>}
-    </div>
-  );
+    return (
+        <div className="buttons-container">
+            {question && (
+                <button title={`Créer une flashcard avec la question "${question}"`}>
+                    {FR.CreateFlashcard}
+                </button>
+            )}
+            {flashcardPID && <button>Voir la flashcard</button>}
+        </div>
+    );
 }
 
-// Le terme notion n'est pas très claire, on pourrait tout renomer en knowledge (pour symboliser la brique de savoir)
+
 function Knowledge({ publicIdentifier, activeKnowledge, setActiveKnowledge }) {
-  // const [delta, setDelta] = useState({}); // Ici remplacer par mon hook personalisé pour récupérer delta, les states ect... à partir de publicIdentifier
-  // Code du hook personalisé : 
-//   if(publicIdentifier) {
-//     const [state, setState] = useState('loading');
-//     const [delta, setDelta] = useState({publicIdentifier: publicIdentifier});
-//     const knowledgeFetcher = new KnowledgeFetcher(delta);
-//     const response = await knowledgeFetcher.restore();
-//     if(response) {
-//       setDelta(response);
-//     } else {
-//       setState('error');
-//     }
 
-// } else {
-//     const [delta, setDelta] = useState({publicIdentifier: uuidv4()});
-//     const knowledgeFetcher = new KnowledgeFetcher(publicIdentifier);
-//     const response = await knowledgeFetcher.create();
-//     if(response) {
-//       setDelta(response);
-//     } else {
-//       setState('error');
-//     }
+    const { delta, setDelta, state, setState } = useManageKnowledge(publicIdentifier);
 
-//   }
+    console.log(delta);
 
-  // Pour le code dans course : faire la page dans course avec les 5 ou 6 boutons pour accéder aux différentes pages
-  
-  return (
-    <div className="knowledge" id={"knowledge-" + publicIdentifier}>
-      <CommentZone
-        question={delta.question}
-        setQuestion={(event) =>
-          mergeDelta(delta, setDelta, { question: event.target.value })
-        }
-        comment={delta.comment}
-        setComment={(event) =>
-          mergeDelta(delta, setDelta, { comment: event.target.value })
-        }
-      />
-      <Editor
-        key={publicIdentifier}
-        value={publicIdentifier}
-        onFocus={() => setActiveKnowledge(publicIdentifier)}
-        onChange={(value) => {
-          mergeDelta(delta, setDelta, { content: value });
-        }}
-        placeholder={"Contenu"}
-      />
+    return (
+        <Loader state={state}>
+            <div className="knowledge" id={"knowledge-" + publicIdentifier}>
+                {delta.knowledge && <CommentZone
+                    question={delta.knowledge.question}
+                    setQuestion={(event) => {
+                        const knowledge = delta.knowledge;
+                        knowledge.question = event.target.value;
+                        console.log(knowledge);
+                        mergeDelta(delta, setDelta, { knowledge: knowledge });
+                        console.log(delta);
+                    }}
+                    comment={delta.knowledge.comment}
+                    setComment={(event) => {
+                        const knowledge = delta.knowledge;
+                        knowledge['comment'] = event.target.value;
+                        console.log(knowledge);
+                        mergeDelta(delta, setDelta, { knowledge: knowledge })
+                    }}
+                />}
+                {delta && delta.knowledge && <Editor
+                    key={publicIdentifier}
+                    value={{ ops: delta.knowledge.ops }}
+                    onFocus={() => setActiveKnowledge(publicIdentifier)}
+                    onChange={(value) => {
+                        console.log("in onChange");
+                        console.log(value);
+                        console.log(delta.knowledge);
+                        const knowledge = delta.knowledge;
+                        knowledge.ops = value.ops;
 
-      <Buttons question={delta.question} />
-    </div>
-  );
+                        console.log(knowledge);
+                        mergeDelta(delta, setDelta, { knowledge: knowledge });
+                    }}
+                />
+                }
+                <Buttons question={delta.question} />
+            </div>
+        </Loader>
+    );
 }
 
 // LA SOLUTION OUR REORGANISER LE CODE SANS BUG :

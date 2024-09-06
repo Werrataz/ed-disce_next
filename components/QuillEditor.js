@@ -11,125 +11,126 @@ import "@/app/css/maths.css";
 import "@/app/css/features/editor.css";
 
 if (typeof window !== "undefined") {
-  window.katex = katex;
-  window.jQuery = window.$ = $;
-  window.mathquill4quill = require("mathquill4quill");
-  require("@edtr-io/mathquill/build/mathquill.js");
+    window.katex = katex;
+    window.jQuery = window.$ = $;
+    window.mathquill4quill = require("mathquill4quill");
+    require("@edtr-io/mathquill/build/mathquill.js");
 }
 
 function Toolbar({ uniqueId, isActive, applyColor }) {
-  return (
-    <div className={isActive ? "toolbar" : "toolbar hide"}>
-      <div id={uniqueId}>
-        <button className="ql-header" value="1"></button>
-        <button className="ql-header" value="2"></button>
-        <button className="ql-bold"></button>
-        <button className="ql-italic"></button>
-        <button className="ql-underline"></button>
-        <button className="ql-list" value="ordered"></button>
-        <button className="ql-list" value="bullet"></button>
-        <button className="ql-align" value=""></button>
-        <button className="ql-align" value="right"></button>
-        <button className="ql-align" value="center"></button>
-        <button
-          className="ql-personalized-color"
-          style={{ backgroundColor: "#000000" }}
-          onClick={() => applyColor("#000000")}
-        ></button>
-        <button
-          className="ql-personalized-color"
-          style={{ backgroundColor: "#ff0000" }}
-          onClick={() => applyColor("#ff0000")}
-        ></button>
-        <button
-          className="ql-personalized-color"
-          style={{ backgroundColor: "#0000ff" }}
-          onClick={() => applyColor("#0000ff")}
-        ></button>
-        <button className="ql-formula"></button>
-      </div>
-    </div>
-  );
+    return (
+        <div className={isActive ? "toolbar" : "toolbar hide"}>
+            <div id={uniqueId}>
+                <button className="ql-header" value="1"></button>
+                <button className="ql-header" value="2"></button>
+                <button className="ql-bold"></button>
+                <button className="ql-italic"></button>
+                <button className="ql-underline"></button>
+                <button className="ql-list" value="ordered"></button>
+                <button className="ql-list" value="bullet"></button>
+                <button className="ql-align" value=""></button>
+                <button className="ql-align" value="right"></button>
+                <button className="ql-align" value="center"></button>
+                <button
+                    className="ql-personalized-color"
+                    style={{ backgroundColor: "#000000" }}
+                    onClick={() => applyColor("#000000")}
+                ></button>
+                <button
+                    className="ql-personalized-color"
+                    style={{ backgroundColor: "#ff0000" }}
+                    onClick={() => applyColor("#ff0000")}
+                ></button>
+                <button
+                    className="ql-personalized-color"
+                    style={{ backgroundColor: "#0000ff" }}
+                    onClick={() => applyColor("#0000ff")}
+                ></button>
+                <button className="ql-formula"></button>
+            </div>
+        </div>
+    );
 }
 
 class QuillEditor extends React.Component {
-  static compt = 0;
-  static active = null;
+    static compt = 0;
+    static active = null;
 
-  constructor(props) {
-    super(props);
-    this.reactQuill = React.createRef();
-    this.attachQuillRefs = this.attachQuillRefs.bind(this);
-    this.didAttachQuillRefs = false;
-    this.code = ++QuillEditor.compt;
-    console.log(this.props);
-  }
-
-  componentDidMount() {
-    if (!this.didAttachQuillRefs) {
-      this.attachQuillRefs();
-      this.didAttachQuillRefs = true;
+    constructor(props) {
+        super(props);
+        this.reactQuill = React.createRef();
+        this.attachQuillRefs = this.attachQuillRefs.bind(this);
+        this.didAttachQuillRefs = false;
+        this.code = ++QuillEditor.compt;
+        console.log(this.props);
     }
-  }
 
-  handleDocumentClick = (event) => {
-    console.log("Element clicked:", event.target);
-  };
+    componentDidMount() {
+        if (!this.didAttachQuillRefs) {
+            this.attachQuillRefs();
+            this.didAttachQuillRefs = true;
+        }
+    }
 
-  attachQuillRefs() {
-    const enableMathQuillFormulaAuthoring = window.mathquill4quill({
-      Quill,
-      katex,
-    });
+    handleDocumentClick = (event) => {
+        console.log("Element clicked:", event.target);
+    };
 
-    enableMathQuillFormulaAuthoring(this.reactQuill.current.editor, {
-      displayHistory: true, // defaults to false
-      historyCacheKey: "disce_math_history_cachekey_", // optional
-      historySize: 10, // optional (defaults to 10)
-      operators: [
-        ["\\pm", "\\pm"],
-        ["\\sqrt{x}", "\\sqrt"],
-        ["\\sqrt[n]{x}", "\\nthroot"],
-        ["\\frac{x}{y}", "\\frac"],
-        ["\\sum^{s}_{x}{d}", "\\sum"],
-        ["\\prod^{s}_{x}{d}", "\\prod"],
-        ["\\coprod^{s}_{x}{d}", "\\coprod"],
-        ["\\int^{s}_{x}{d}", "\\int"],
-        ["\\binom{n}{k}", "\\binom"],
-      ],
-    });
-  }
+    attachQuillRefs() {
+        const enableMathQuillFormulaAuthoring = window.mathquill4quill({
+            Quill,
+            katex,
+        });
 
-  applyColor = (color) => {
-    this.reactQuill.current.editor.format("color", color);
-  };
+        enableMathQuillFormulaAuthoring(this.reactQuill.current.editor, {
+            displayHistory: true, // defaults to false
+            historyCacheKey: "disce_math_history_cachekey_", // optional
+            historySize: 10, // optional (defaults to 10)
+            operators: [
+                ["\\pm", "\\pm"],
+                ["\\sqrt{x}", "\\sqrt"],
+                ["\\sqrt[n]{x}", "\\nthroot"],
+                ["\\frac{x}{y}", "\\frac"],
+                ["\\sum^{s}_{x}{d}", "\\sum"],
+                ["\\prod^{s}_{x}{d}", "\\prod"],
+                ["\\coprod^{s}_{x}{d}", "\\coprod"],
+                ["\\int^{s}_{x}{d}", "\\int"],
+                ["\\binom{n}{k}", "\\binom"],
+            ],
+        });
+    }
 
-  render() {
-    return (
-      <div className="editor-container" onFocus={this.props.whenDivGetFocused}>
-        <Toolbar
-          uniqueId={"toolbar-" + this.code}
-          isActive={this.props.isActive}
-          applyColor={this.applyColor}
-        />
-        <ReactQuill
-          className="editor"
-          ref={this.reactQuill}
-          modules={{
-            formula: true,
-            toolbar: { container: `#toolbar-${this.code}` },
-          }}
-          value={this.props.value}
-          theme={"snow"}
-          placeholder={this.props.placeholder}
-          bounds={".quill"}
-          onFocus={(event) => this.props.onFocus(event, this.props.isActive)}
-          onBlur={(event) => this.props.onBlur(event, this.props.isActive)}
-          onChange={this.props.onChange}
-        />
-      </div>
-    );
-  }
+    applyColor = (color) => {
+        this.reactQuill.current.editor.format("color", color);
+    };
+
+    render() {
+        return (
+            <div className="editor-container" onFocus={this.props.whenDivGetFocused}>
+                <Toolbar
+                    uniqueId={"toolbar-" + this.code}
+                    isActive={!this.props.disabled && this.props.isActive}
+                    applyColor={this.applyColor}
+                />
+                <ReactQuill
+                    className="editor"
+                    ref={this.reactQuill}
+                    modules={{
+                        formula: true,
+                        toolbar: { container: `#toolbar-${this.code}` },
+                    }}
+                    value={this.props.value}
+                    theme={"snow"}
+                    placeholder={this.props.placeholder}
+                    bounds={".quill"}
+                    onFocus={(event) => this.props.onFocus(event, this.props.isActive)}
+                    onBlur={(event) => this.props.onBlur(event, this.props.isActive)}
+                    onChange={this.props.onChange}
+                    readOnly={this.props.disabled}
+                />
+            </div>
+        );
+    }
 }
 
 export default QuillEditor;

@@ -1,4 +1,4 @@
-import { GLOBAL } from "../states/globals"; 
+import { GLOBAL } from "../states/globals";
 import { AbstractFetcher } from "./abstract_fetcher";
 
 
@@ -9,11 +9,11 @@ class FlashcardFetcher extends AbstractFetcher {
 
     }
 
-    async train() {
+    async generateExercise() {
         const url = `${GLOBAL.domainName}/generate_exercise/`
         const response = await super.create(url);
         this.merge(response);
-        return response.exercise
+        return response;
     }
 
     async correct() {
@@ -23,12 +23,26 @@ class FlashcardFetcher extends AbstractFetcher {
         return response.IAcorrection
     }
 
+    async restoreKnowledge() {
+        const url = `${GLOBAL.domainName}/knowledge/${this._delta.publicIdentifier}/`
+        const response = await super.restore(url);
+        this.set(response);
+        return response;
+    }
+
+    async amendKnowledge() {
+        const url = `${GLOBAL.domainName}/knowledge/${this._delta.publicIdentifier}/`
+        const response = await super.amend(url);
+        this.merge(response);
+        return response;
+    }
+
     // Récuère les données d'une instance de la flashcard via l'api. !!attention on ne peut pas get le publicIdentifier (puisqu'il sert à obtenir les autres données)!!
     async restore() {
         const url = `${GLOBAL.domainName}/flashcard/${this._delta.publicIdentifier}/`
         const response = await super.restore(url);
-        this.merge(response)
-        return response
+        this.merge(response);
+        return response;
     }
 
     async amend() {

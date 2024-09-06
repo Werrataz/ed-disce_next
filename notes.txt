@@ -1,4 +1,39 @@
 
+
+
+Il y a un bug d'affichage à régler dans la vue review (ça s'affiche pas...)
+
+
+-> Faire correctExercise
+-> Faire la vue pour réviser les exercices (il faudra pour ça que je fasse la fonction pour récupérer les exercices déjà créés)
+Sauvegarder les propositions de l'apprenant et les réponses de l'IA ou pas (peut-être à rajouter dans le futur pour limiter les appels à l'IA)
+lance une session d'exercice. Après je peux décider d'en faire un et de proposer à l'étudiant soit d'en refaire un sur la même thématique, soit de passer à la suivante)
+(S'il passe à la suivante, je génère un exercice aléatoirement pour un autre )
+
+
+Tester que mistral fonctionne toujours
+Si c'est tout bon, vérifier que la création d'exercice est ok, et créer la fonction pour gérer la création d'exercice
+Puis faire pareil pour la correction d'exercice (et la sauvegarde des données nécessaires)
+Puis créer la vue pour les exercices
+-> Puis créer la vue pour la révision des flashcards (il faudra d'abord créer tout les hooks nécessaires
+
+
+
+Code de de la sauvegarde fait (voir après si modification de Course)
+Faire maintenant les parties consultation des flashcards et consultation des cours
+Faire la partie sur les exercices (qui implique de modifier la structure des flashcards)
+Il faut que je sauvegarde pour chaque exercice la question, et la réponse
+(il faudra que je teste avec Mistral pour voir s'il donne des remarques cohérentes 
+pour les réponses des étudiants à partir uniquement de la réponse et de la correction détaillée)
+
+
+-> Faire la partie déconnexion (et vérifier que la connexion et déconnexion fonctionne)
+-> Mettre ensuite en place les tokens de connexion
+-> Faire ensuite les parties sur la connexion avec les IAs si tout le reste est bon
+-> Pour la suite, il faudrait finaliser la nouvelle version de Course, pour ensuite créer la génération de cours automatisé par IA
+
+
+
 1. Ecrire le code pour les pages course/management
 2. Faire la page d'accueil et le layout avec le menu
 3. Faire la page de prise de note de cours, avec la nouvelle architecture en Knowledge

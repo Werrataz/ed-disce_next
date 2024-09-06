@@ -2,6 +2,8 @@ header {
     background-color: #4153AF;
     color: #F6EEF1;
     padding: 20px;
+    text-align: right;
+    /* Add this line to align the text to the right */
 }
 
 header a {
@@ -16,4 +18,65 @@ header a:hover {
 
 body {
     background-color: white;
+}
+
+main {
+    margin-left: 80px;
+}
+
+/* Styles de base pour le menu de navigation */
+nav {
+    background-color: #333;
+    /* Couleur de fond noire */
+    color: white;
+    /* Couleur du texte blanche */
+    width: 60px;
+    /* Largeur initiale du menu */
+    height: 100vh;
+    /* Occupe toute la hauteur de l'écran */
+    overflow: hidden;
+    /* Masque le contenu qui dépasse */
+    transition: width 0.3s ease;
+    /* Transition pour l'animation de la largeur */
+    position: fixed;
+    /* Fixe le menu sur le côté gauche de l'écran */
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+/* Styles pour le menu lorsqu'il est ouvert */
+nav:hover {
+    width: 250px;
+    /* Largeur du menu lorsqu'il est ouvert */
+}
+
+/* Styles pour les liens et les boutons */
+nav p,
+nav button {
+    padding: 10px;
+    margin: 0;
+    color: white;
+    text-decoration: none;
+    display: block;
+    transition: background-color 0.3s ease;
+}
+
+/* Styles pour les liens et les boutons au survol */
+nav p:hover,
+nav button:hover {
+    background-color: #555;
+    /* Couleur de fond grise au survol */
+}
+
+/* Styles pour les liens */
+nav p a {
+    color: white;
+    text-decoration: none;
+}
+
+/* Styles pour les liens au survol */
+nav p a:hover {
+    color: #ccc;
+    /* Couleur du texte grise au survol */
 }
