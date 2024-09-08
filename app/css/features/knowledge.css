@@ -15,11 +15,11 @@
     max-width: 70%;
 }
 
-textarea {
+.comment-zone textarea {
     border: none;
     resize: none;
     /* Pour éviter le redimensionnement des textarea */
-    width: 100%;
+    min-width: 100%;
     /* Vous pouvez ajuster la hauteur selon vos besoins */
     box-sizing: border-box;
 }

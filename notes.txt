@@ -1,13 +1,23 @@
 
+Ajouter éventuellement quelque chose dans l'éditeur quill 
+pour récupérer et balancer dans le nouvel éditeur les éléments qui sont après le curseur
+(il faudra peut-être changer ce qui est retourné par event de onKeyDown ou onChange ?)
+Puis refaire très rapidement le tour de toutes les pages pour passer au css.
 
-Les problèmes qu'il reste à régler : 
-- Les évènements se déclanchent 2 fois
-- Les évènements se déclanchent aussi lorsque je ne suis pas dans une zone
+Quelques remarques sur l'usage : 
+Faire en sorte qu'il y ait une ligne directe pour s'entrainer sur le cours
+Il faudra faire la page de création de cours avec l'appel à chatGPT pour la génération de cours
+à partir de pdf et autre trucs
 
-Solution : créer l'évènement à chaque fois que je onFocus un élément, et l'enlever lorsque je onBlur.
+Remarques sup : 
+ça serait beaucoup plus opti de tout charger dans course et de fournir à chaque élément les valeur dont il a besoin au début
+(Par ce que sinon tout est forcement rechargé à chaque rerendu, ce qui est pas terible...)
+
+Pour le style du menu sur le coté, faire un truc statique qui est présent sur le coté en permanence
 
 
-Il y a un bug d'affichage à régler dans la vue review (ça s'affiche pas...)
+
+
 
 
 -> Faire correctExercise

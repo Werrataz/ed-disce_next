@@ -8,22 +8,24 @@ const QuillEditor = dynamic(
     { ssr: false, loading: () => <p>Chargement...</p> }
 );
 
-function Editor({ value, onFocus, onBlur, onClick, onChange, disabled, placeholder }) {
+function Editor({ value, onFocus, onBlur, onClick, onKeyDown, onChange, disabled, placeholder, editorId }) {
     const [isActive, setIsActive] = useState(false);
     const handleFocus = useCallback((event, isActive) => {
         if (!isActive) {
             setIsActive(true);
         }
-    }, []);
+        if (onFocus) onFocus(event);
+    }, [onFocus]);
     const handleBlur = useCallback((event, isActive) => {
         if (isActive) {
             setIsActive(false);
         }
-    }, []);
+        if (onBlur) onBlur(event);
+    }, [onBlur]);
     const handleChange = useCallback((content, delta, source, editor) => {
         if (onChange) {
             const deltaContent = editor.getContents();
-            onChange(deltaContent);
+            if (onChange) onChange(deltaContent);
         }
     }, [onChange]);
 
@@ -31,9 +33,12 @@ function Editor({ value, onFocus, onBlur, onClick, onChange, disabled, placehold
         <QuillEditor
             whenDivGetFocused={onFocus}
             value={value}
+            editorId={editorId}
             isActive={isActive}
             onFocus={handleFocus}
             onBlur={handleBlur}
+            onKeyDown={onKeyDown}
+            onClick={onClick}
             placeholder={placeholder}
             onChange={handleChange}
             disabled={disabled}

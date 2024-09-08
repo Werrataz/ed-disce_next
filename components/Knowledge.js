@@ -8,6 +8,9 @@ import "@/app/css/features/knowledge.css";
 // import { emptyEditor } from "../config/course.config";
 import { mergeDelta } from "@/functions/merge.js";
 import Loader from '@/components/Loader';
+import generateActivatedFlashcard from "@/hooks/generateActivatedFlashcard";
+import { on } from "events";
+import { FlashcardFetcher } from "@/fetchers/flashcard_fetcher.js";
 
 
 const logValue = debounce((val) => {
@@ -33,21 +36,51 @@ function CommentZone({ question, setQuestion, comment, setComment }) {
     );
 }
 
-function Buttons({ question, flashcardPID }) {
+function Buttons({ delta, setDelta, flashcardPID }) {
     return (
         <div className="buttons-container">
-            {question && (
-                <button title={`Créer une flashcard avec la question "${question}"`}>
-                    {FR.CreateFlashcard}
-                </button>
-            )}
-            {flashcardPID && <button>Voir la flashcard</button>}
-        </div>
+            <button
+                className="delete-button-dltbn2391"
+                title="Supprimer définitivement cette connaissance et la flashcard qui liée"
+                onClick={() => {
+                    const flashcardFetcher = new FlashcardFetcher(delta);
+                    const response = flashcardFetcher.delete();
+                    if (response.ok) {
+                        console.log("flashcard supprimée");
+                    } else {
+                        console.log("La suppression n'a pas eu lieu à cause d'une erreur innatendue");
+                    }
+                }}>❌</button>
+            {
+                delta.active === true ? (
+                    <div>
+                        <p>Flashcard associée à cette notion</p>
+                        <button onClick={() => {
+                            // A compléter 
+                        }}>Voir la flashcard</button>
+                    </div>
+                ) : (<div>
+                    {delta.knowledge.question && (
+                        <button
+                            title={`Créer une flashcard avec la question "${delta.knowledge.question}"`}
+                            onClick={() => {
+                                generateActivatedFlashcard(delta, setDelta);
+                                // On modifie la flashcard pour y ajouter les champs nécessaires
+                                // Il y a déjà une fonction pour faire ça normalement
+
+                            }} >
+                            {FR.CreateFlashcard}
+                        </button>
+                    )}
+                </div>
+                )
+            }
+        </div >
     );
 }
 
 
-function Knowledge({ publicIdentifier, activeKnowledge, setActiveKnowledge }) {
+function Knowledge({ publicIdentifier, onKeyDown, activeKnowledge, setActiveKnowledge }) {
 
     const { delta, setDelta, state, setState } = useManageKnowledge(publicIdentifier);
 
@@ -76,6 +109,9 @@ function Knowledge({ publicIdentifier, activeKnowledge, setActiveKnowledge }) {
                 key={publicIdentifier}
                 value={{ ops: delta.knowledge.ops }}
                 onFocus={() => setActiveKnowledge(publicIdentifier)}
+                onBlur={() => setActiveKnowledge(null)}
+                onKeyDown={onKeyDown}
+                editorId={'editor-' + publicIdentifier}
                 onChange={(value) => {
                     console.log("in onChange");
                     console.log(value);
@@ -86,7 +122,7 @@ function Knowledge({ publicIdentifier, activeKnowledge, setActiveKnowledge }) {
                     mergeDelta(delta, setDelta, { knowledge: knowledge });
                 }}
             />
-            <Buttons question={delta.knowledge.question} />
+            {delta && <Buttons delta={delta} setDelta={setDelta} />}
         </div>
     );
 }

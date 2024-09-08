@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, act, useCallback } from "react";
 import Knowledge from "./Knowledge";
 import { mergeDelta } from "@/functions/merge";
 import useManageCourse from "@/hooks/manageCourse";
 import Editor from "./Editor";
 import Loader from "@/components/Loader"
 import { v4 as uuidv4 } from "uuid";
+import Quill from "quill";
 // import "../css/Course.css";
 
 // function Course() {
@@ -78,63 +79,113 @@ export default function Course({ delta, setDelta }) {
 
     const [activeKnowledge, setActiveKnowledge] = useState("");
 
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState('base');
 
     console.log("Course");
     console.log(delta);
 
-    useEffect(() => {
-        console.log("useEffect");
-        function handleKeyDown(event) {
-            console.log("handleKeyDown");
-            if (event.key === "Enter") {
-                console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-                console.log("Enter");
-                console.log(delta);
-                if (delta.content) {
-                    event.preventDefault();
-                    console.log(delta.content.indexOf(activeKnowledge));
-                    const index = delta.content.indexOf(activeKnowledge);
-                    const publicIdentifier = uuidv4();
-                    let newContent = content;
-                    console.log(delta.content);
-                    console.log(newContent);
-                    newContent.push(publicIdentifier);
-                    console.log(newContent); // Faire l'enregistrement de delta de course lorsque celui-ci est modifié
-                    setContent([...content, publicIdentifier]);
-                    console.log(delta);
-                }
+    // useEffect(() => {
+    //     console.log("useEffect");
+    //     function handleKeyDown(event) {
+    //         console.log("handleKeyDown");
+    //         if (event.key === "Enter") {
+    //             console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    //             console.log("Enter");
+    //             console.log(delta);
+    //             if (delta.content) {
+    //                 event.preventDefault();
+    //                 console.log(delta.content.indexOf(activeKnowledge));
+    //                 const index = delta.content.indexOf(activeKnowledge);
+    //                 const publicIdentifier = uuidv4();
+    //                 let newContent = content;
+    //                 console.log(delta.content);
+    //                 console.log(newContent);
+    //                 newContent.push(publicIdentifier);
+    //                 console.log(newContent); // Faire l'enregistrement de delta de course lorsque celui-ci est modifié
+    //                 setContent([...content, publicIdentifier]);
+    //                 console.log(delta);
+    //             }
 
-                // Lors de la création d'un nouveau knowledge, il faudra générer un uuid
-                // pour l'enregistrer (et ajouter l'uuid à la liste au bon endroit)
-            } else if (event.key === "Backspace") {
-                if (delta.content) {
-                    console.log("Backspace");
-                    console.log(delta.content.indexOf(activeKnowledge));
-                    // Action à effectuer lorsque la touche Backspace est pressée
-                    // Vérifier s'il y a un knowledge actif
-                    // Vérifier si le knowledge actif est vide
-                    // Supprimer le knowledge actif
+    //             // Lors de la création d'un nouveau knowledge, il faudra générer un uuid
+    //             // pour l'enregistrer (et ajouter l'uuid à la liste au bon endroit)
+    //         } else if (event.key === "Backspace") {
+    //             if (delta.content) {
+    //                 console.log("Backspace");
+    //                 console.log(delta.content.indexOf(activeKnowledge));
+    //                 // Action à effectuer lorsque la touche Backspace est pressée
+    //                 // Vérifier s'il y a un knowledge actif
+    //                 // Vérifier si le knowledge actif est vide
+    //                 // Supprimer le knowledge actif
+    //             }
+    //         }
+    //     }
+
+    //     document.addEventListener("keydown", handleKeyDown);
+
+    //     return () => {
+    //         document.removeEventListener("keydown", handleKeyDown);
+    //         console.log("Event listener removed");
+    //     };
+
+    // }, [delta, setDelta, activeKnowledge]);
+
+    const handleKeyDown = useCallback((event, value) => {
+        if (event.key === "Enter") {
+            console.log('azeif - ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ')
+            console.log(step);
+            if (step === 'base') {
+                setStep('alert'); // setStep ne fonctionne pas ??
+                console.log("step to 1");
+                console.log(step);
+            } else if (step === 'alert') {
+                console.log("handleKeyDown - BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+                event.preventDefault(); // Cette ligne ne s'execute pas correctement (à corriger éventuellement)
+                const element = document.getElementById('editor-' + value).querySelector('.ql-editor');
+                const selection = window.getSelection();
+                if (selection.rangeCount > 0) {
+                    const range = selection.getRangeAt(0);
+                    const cursorPosition = range.startOffset;
+                    // Extraire le contenu HTML après le curseur
+                    const htmlAfterCursor = element.innerHTML.substring(cursorPosition);
+                    console.log('HTML after cursor:', htmlAfterCursor);
+                }
+                const index = content.indexOf(value);
+                const publicIdentifier = uuidv4();
+                let newContent = [...content];
+                newContent.splice(index + 1, 0, publicIdentifier);
+                setContent(newContent);
+                setTimeout(() => {
+                    const newElement = document.getElementById('editor-' + publicIdentifier).querySelector('.ql-editor');
+                    console.log(newElement);
+                    if (newElement) {
+                        newElement.focus();
+                    }
+                }, 0);
+                setStep('base');
+            }
+        } else if (event.key === 'Backspace') {
+            const element = document.getElementById('editor-' + value).querySelector('.ql-editor');
+            if (element.innerHTML === '<p><br></p>') {
+                if (step === 'base') {
+                    setStep('rmv');
+                } else if (step === 'rmv') {
+                    event.preventDefault();
+                    const index = content.indexOf(value);
+                    let newContent = [...content];
+                    newContent.splice(index, 1);
+                    setContent(newContent);
+                    setStep('base');
                 }
             }
+        } else {
+            setStep('base');
         }
-
-        document.addEventListener("keydown", handleKeyDown);
-
-        return () => {
-            document.removeEventListener("keydown", handleKeyDown);
-            console.log("Event listener removed");
-        };
-
-    }, [delta, setDelta, activeKnowledge]);
+    }, [content, setContent, step, setStep]);
 
     useEffect(() => {
-        console.log("delta changed", delta);
-    }, [delta]);
-
-    // useEffect(() => {
-    // il faudra gérer les enregistrements de delta (soit dans le hook de la balise parente)
-    // }, [course]);
+        console.log("useEffect- step - SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+        console.log(step);
+    }, [step]);
 
     return (
         <div className="course">
@@ -142,6 +193,11 @@ export default function Course({ delta, setDelta }) {
                 <Knowledge
                     key={value}
                     publicIdentifier={value}
+                    onKeyDown={(event) => handleKeyDown(event, value)}
+                    // J'ai ajouté quelque chose pour passer activeKnowledge à null 
+                    // quand le knowledge est onBlur. 
+                    // Il faudra ensuite juste que j'ajoute quelque chose qui va créer ou retirer un addEventListener sur 'Enter'
+                    // en fonction de la valeur de activeKnowledge
                     activeKnowledge={activeKnowledge}
                     setActiveKnowledge={setActiveKnowledge}
                 />

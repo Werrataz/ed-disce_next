@@ -25,16 +25,16 @@ const Page = () => {
     return (
         <Loader state={state}>
             <h1>Review</h1>
-            {delta && (
+            {flashcard && (
                 <div className='container-review-cnriw057'>
-                    <Editor value={delta.flashcard.question} disabled={true} />
+                    <Editor value={flashcard.question} disabled={true} />
                     {!isAnswerVisible &&
                         <div className='level-div-led230'>
                             <button onClick={handleAnswer}>Voir la réponse</button>
                         </div>
                     }
                     {isAnswerVisible &&
-                        <Editor value={delta.flashcard.answer} readOnly={true} />
+                        <Editor value={delta.flashcard.answer} disabled={true} />
                     }
                     {isAnswerVisible &&
                         <div className='mastery-level-div-amlfd1230'>

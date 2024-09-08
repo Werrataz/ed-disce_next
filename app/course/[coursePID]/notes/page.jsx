@@ -9,6 +9,7 @@ import { useParams } from 'next/navigation';
 import Loader from '@/components/Loader';
 import Course from '@/components/Course';
 import useManageCourse from '@/hooks/manageCourse';
+import { useRouter } from 'next/navigation';
 import LANG from '@/config/language.config';
 
 import '@/app/css/notes.css';
@@ -28,6 +29,8 @@ function Page() {
 
     const { delta, setDelta, state, setState } = useManageCourse();
 
+    const router = useRouter();
+
     console.log(delta);
 
     // useEffect(() => debounce(async () => {
@@ -45,6 +48,16 @@ function Page() {
     return (
         <Loader state={state} >
             <div className='separator-sep00213'></div>
+            <div className='global-commands-glcom1023'>
+                <button onClick={() => {
+                    const flashcardList = delta.flashcards.filter(item => item.active).map(item => item.publicIdentifier);
+                    console.log(flashcardList);
+                    localStorage.setItem('flashcardList', JSON.stringify(flashcardList));
+                    router.push('/review');
+                }}>
+                    Mémoriser ce cours
+                </button>
+            </div>
             <Course delta={delta} setDelta={setDelta} />
         </Loader>
     );

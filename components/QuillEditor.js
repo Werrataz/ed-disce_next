@@ -114,6 +114,7 @@ class QuillEditor extends React.Component {
                 />
                 <ReactQuill
                     className="editor"
+                    id={this.props.editorId}
                     ref={this.reactQuill}
                     modules={{
                         formula: true,
@@ -126,6 +127,7 @@ class QuillEditor extends React.Component {
                     onFocus={(event) => this.props.onFocus(event, this.props.isActive)}
                     onBlur={(event) => this.props.onBlur(event, this.props.isActive)}
                     onChange={this.props.onChange}
+                    onKeyDown={this.props.onKeyDown}
                     readOnly={this.props.disabled}
                 />
             </div>
